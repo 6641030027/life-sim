@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b5aa8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>เกมจำลองชีวิต</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #e9edf2;
+  --surface: #ffffff;
+  --surface2: #eef2f6;
+  --text: #1b2430;
+  --text2: #566273;
+  --border: #d6dce4;
+  --blue: #0b5aa8;
+  --blue-bg: #e3eefb;
+  --nav: #0b5aa8;
+  --green: #2f9e44;
+  --orange: #f08c00;
+  --good-bg: #e1f3e5;
+  --good-text: #1d6a2f;
+  --bad-bg: #fde6e6;
+  --bad-text: #9f2a2a;
+  --warn-bg: #fff0d1;
+  --warn-text: #865700;
+  --scrim: rgba(0, 0, 0, 0.45);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f14;
+    --surface: #151b23;
+    --surface2: #1d2530;
+    --text: #e8edf3;
+    --text2: #a2adbb;
+    --border: #2d3846;
+    --blue: #7db6f5;
+    --blue-bg: #19314d;
+    --nav: #0e3d70;
+    --green: #3bb25a;
+    --orange: #f59f1a;
+    --good-bg: #17382240;
+    --good-text: #86d99b;
+    --bad-bg: #4a1f1f66;
+    --bad-text: #f2a0a0;
+    --warn-bg: #4a381266;
+    --warn-text: #f1c36b;
+    --scrim: rgba(0, 0, 0, 0.6);
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Sukhumvit Set", "Thonburi", "Noto Sans Thai", system-ui, sans-serif;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+button { font: inherit; color: inherit; touch-action: manipulation; cursor: pointer; }
+h1, h2 { margin: 0; font-weight: 600; }
+#app {
+  max-width: 520px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-left: 0.5px solid var(--border);
+  border-right: 0.5px solid var(--border);
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  padding-top: max(4px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+}
+.title { font-size: 17px; }
+.icon-btn {
+  width: 44px; height: 44px;
+  border: 0; border-radius: 50%;
+  background: transparent;
+  display: grid; place-items: center;
+  font-size: 22px;
+}
+.icon-btn:active { background: var(--surface2); }
+.char {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--blue-bg); color: var(--blue);
+  display: grid; place-items: center;
+  font-weight: 600; font-size: 15px;
+  flex: 0 0 auto;
+}
+.who { flex: 1; min-width: 0; }
+.name { font-weight: 600; font-size: 17px; color: var(--blue); line-height: 1.3; }
+.sub { font-size: 13px; color: var(--text2); line-height: 1.3; }
+.money { text-align: right; }
+.money .amt { font-weight: 600; font-size: 18px; color: var(--blue); line-height: 1.3; }
+.money .lbl { font-size: 12px; color: var(--text2); line-height: 1.3; }
+
+.body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.log { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; -webkit-overflow-scrolling: touch; }
+.log .age-h { color: var(--blue); font-weight: 600; margin: 14px 0 4px; }
+.log .age-h:first-child { margin-top: 0; }
+.log p { margin: 0 0 6px; line-height: 1.6; color: var(--text2); font-size: 15px; }
+.log p .ti-star { color: var(--orange); margin-right: 4px; vertical-align: -2px; }
+
+.nav {
+  position: relative;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--nav);
+  padding: 8px 2px 6px;
+}
+.nav button {
+  background: none; border: 0; color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: 2px; font-size: 12px; min-height: 50px; padding: 0 2px;
+}
+.nav button .ti { font-size: 24px; }
+.nav button:active { opacity: 0.7; }
+.nav .age-btn {
+  width: 66px; height: 66px; margin: -32px auto 0;
+  border-radius: 50%;
+  background: var(--green);
+  border: 4px solid var(--surface);
+  justify-content: center; gap: 0;
+  font-weight: 600; font-size: 13px; line-height: 1;
+  min-height: 0; padding: 0;
+}
+.nav .age-btn .ti { font-size: 24px; }
+.nav .age-btn:active { opacity: 1; filter: brightness(0.9); }
+
+.focus { padding: 8px 0 4px; border-bottom: 1px solid var(--border); }
+.focus-head { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 6px; font-size: 13px; color: var(--text2); }
+.focus-head b { font-weight: 600; color: var(--text); font-size: 14px; }
+.chips {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 2px 14px 8px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto; scroll-snap-align: start;
+  display: flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+  font-size: 14px;
+}
+.chip .ti { font-size: 18px; }
+.chip[aria-pressed="true"] { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); font-weight: 600; }
+.focus-status { padding: 0 14px 4px; font-size: 13px; color: var(--text2); min-height: 20px; }
+.focus-status b { color: var(--blue); font-weight: 600; }
+
+.stats { padding: 10px 14px 4px; }
+.stat { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.stat .lab { width: 92px; font-size: 14px; font-weight: 600; color: var(--blue); display: flex; align-items: center; gap: 5px; }
+.stat .lab .ti { font-size: 18px; }
+.bar { flex: 1; height: 24px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
+.bar i { display: block; height: 100%; transition: width 0.3s; }
+.bar span { position: absolute; right: 8px; top: 0; line-height: 24px; font-size: 13px; font-weight: 600; }
+.stat.new { animation: pop 0.5s ease-out; }
+@keyframes pop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.deep {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; text-align: left;
+  padding: 12px 14px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: var(--surface); border: 0; border-top: 1px solid var(--border);
+  color: var(--text2); font-size: 14px;
+}
+.deep .grow { flex: 1; }
+.deep .ti { font-size: 18px; }
+
+.overlay { position: absolute; inset: 0; z-index: 20; display: none; }
+.overlay.open { display: flex; }
+.modal { background: var(--scrim); align-items: center; justify-content: center; padding: 16px; }
+.card { background: var(--surface); border-radius: 14px; padding: 16px; width: 100%; max-height: 100%; overflow-y: auto; animation: pop 0.2s ease-out; }
+.badge { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 6px; background: var(--blue-bg); color: var(--blue); margin-bottom: 8px; }
+.card h2 { font-size: 18px; line-height: 1.4; margin-bottom: 4px; }
+.card .desc { margin: 0 0 12px; color: var(--text2); font-size: 14px; line-height: 1.6; }
+.choice {
+  display: block; width: 100%; text-align: left;
+  padding: 12px; margin-bottom: 8px;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+}
+.choice:active { border-color: var(--blue); background: var(--blue-bg); }
+.choice b { display: block; font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 6px; margin: 0 6px 4px 0; }
+.tag.good { background: var(--good-bg); color: var(--good-text); }
+.tag.bad { background: var(--bad-bg); color: var(--bad-text); }
+.tag.warn { background: var(--warn-bg); color: var(--warn-text); }
+.note { margin: 4px 0 0; font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+
+.panel { flex-direction: column; background: var(--surface2); }
+.panel-head { display: flex; align-items: center; justify-content: space-between; background: var(--nav); color: #fff; padding: 4px 8px; }
+.panel-head .icon-btn { color: #fff; }
+.panel-head h2 { font-size: 17px; }
+.panel-head .spacer { width: 44px; }
+.panel-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.sec { background: #6b7480; color: #fff; text-align: center; font-weight: 600; font-size: 14px; padding: 5px; }
+.rel {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  padding: 12px 14px; background: var(--surface);
+  border: 0; border-bottom: 1px solid var(--border);
+}
+.rel .avatar { width: 46px; height: 46px; }
+.rel .info { flex: 1; min-width: 0; }
+.rel .rname { font-weight: 600; font-size: 16px; color: var(--blue); }
+.rel .rname span { font-weight: 400; color: var(--blue); }
+.rel .rbar { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; color: var(--blue); }
+.rel .rbar .bar { height: 12px; max-width: 220px; }
+.rel .ti-chevron-right { font-size: 22px; color: var(--blue); }
+
+.sheet-wrap { background: var(--scrim); align-items: flex-end; }
+.sheet { width: 100%; max-height: 78%; overflow-y: auto; background: var(--surface); border-radius: 16px 16px 0 0; animation: slideUp 0.22s ease-out; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+.sheet-head { position: sticky; top: 0; background: var(--surface); display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--border); }
+.sheet-head h2 { font-size: 17px; }
+.sheet-body { padding: 12px 16px; }
+.sheet-body p { color: var(--text2); line-height: 1.6; margin: 0 0 10px; font-size: 14px; }
+.skill { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.skill .sname { width: 120px; font-size: 14px; font-weight: 600; }
+.skill .bar { height: 14px; }
+.skill .lv { width: 74px; text-align: right; font-size: 12px; color: var(--text2); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.btn {
+  min-height: 44px; padding: 0 16px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface); font-size: 14px;
+}
+.btn:active { background: var(--blue-bg); border-color: var(--blue); }
+.person-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+
+.toast {
+  position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%);
+  background: #2b3340; color: #fff; padding: 10px 16px; border-radius: 999px;
+  font-size: 14px; z-index: 40; max-width: 90%; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.toast.show { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <button class="icon-btn" id="btnMenu" aria-label="เมนู"><i class="ti ti-menu-2" aria-hidden="true"></i></button>
+    <h1 class="title">ชื่อเกม</h1>
+    <button class="icon-btn" id="btnSettings" aria-label="ตั้งค่า"><i class="ti ti-settings" aria-hidden="true"></i></button>
+  </header>
+
+  <section class="char">
+    <div class="avatar">นภ</div>
+    <div class="who">
+      <div class="name">นภา ใจดี</div>
+      <div class="sub" id="subline"></div>
+    </div>
+    <div class="money">
+      <div class="amt">฿1,200</div>
+      <div class="lbl">เงินส่วนตัว</div>
+    </div>
+  </section>
+
+  <div class="body" id="body">
+    <main class="log" id="log" aria-live="polite"></main>
+
+    <nav class="nav" aria-label="เมนูหลัก">
+      <button id="btnStage"><i class="ti ti-school" id="stageIcon" aria-hidden="true"></i><span id="stageLabel">วัยรุ่น</span></button>
+      <button id="btnAssets"><i class="ti ti-wallet" aria-hidden="true"></i><span>ทรัพย์สิน</span></button>
+      <button class="age-btn" id="btnAge" aria-label="เพิ่มอายุ"><i class="ti ti-plus" aria-hidden="true"></i><span>อายุ</span></button>
+      <button id="btnRel"><i class="ti ti-heart" aria-hidden="true"></i><span>ความสัมพันธ์</span></button>
+      <button id="btnAct"><i class="ti ti-dots-circle-horizontal" aria-hidden="true"></i><span>กิจกรรม</span></button>
+    </nav>
+
+    <section class="focus" aria-label="จุดเน้นของปี">
+      <div class="focus-head"><b>จุดเน้นของปีนี้</b><span>เลื่อนดูตัวเลือกอื่น <i class="ti ti-arrows-horizontal" aria-hidden="true"></i></span></div>
+      <div class="chips" id="chips"></div>
+      <div class="focus-status" id="focusStatus"></div>
+    </section>
+
+    <section class="stats" id="stats" aria-label="สถานะ"></section>
+
+    <button class="deep" id="btnDeep">
+      <i class="ti ti-eye" aria-hidden="true"></i>
+      <span class="grow">ข้อมูลเชิงลึก (ทักษะ ฯลฯ)</span>
+      <i class="ti ti-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <div class="overlay modal" id="evOverlay" role="dialog" aria-modal="true" aria-labelledby="evTitle">
+      <div class="card">
+        <span class="badge">เหตุการณ์</span>
+        <h2 id="evTitle"></h2>
+        <p class="desc" id="evDesc"></p>
+        <div id="evChoices"></div>
+        <p class="note"><i class="ti ti-clock" aria-hidden="true"></i>บางผลจะโผล่หลังผ่านไปหลายปี</p>
+      </div>
+    </div>
+
+    <div class="overlay panel" id="relOverlay" role="dialog" aria-modal="true" aria-label="ความสัมพันธ์">
+      <div class="panel-head">
+        <button class="icon-btn" id="relClose" aria-label="ปิด"><i class="ti ti-x" aria-hidden="true"></i></button>
+        <h2>ความสัมพันธ์</h2>
+        <span class="spacer"></span>
+      </div>
+      <div class="panel-scroll" id="relList"></div>
+    </div>
+
+    <div class="overlay sheet-wrap" id="sheetOverlay">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+        <div class="sheet-head">
+          <h2 id="sheetTitle"></h2>
+          <button class="icon-btn" id="sheetClose" aria-label="ปิด"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STAGES = [
+    { min: 0, name: 'ทารก', icon: 'ti-baby-carriage' },
+    { min: 2, name: 'วัยหัดเดิน', icon: 'ti-walk' },
+    { min: 5, name: 'วัยเด็ก', icon: 'ti-backpack' },
+    { min: 13, name: 'วัยรุ่น', icon: 'ti-school' },
+    { min: 18, name: 'ผู้ใหญ่', icon: 'ti-briefcase' }
+  ];
+
+  var FOCUS = {
+    'ทารก': [['นอนหลับ', 'ti-moon'], ['กินนม', 'ti-baby-bottle'], ['เล่นกับพ่อแม่', 'ti-heart'], ['สำรวจรอบตัว', 'ti-compass']],
+    'วัยหัดเดิน': [['หัดเดินและพูด', 'ti-walk'], ['เล่นของเล่น', 'ti-puzzle'], ['เล่นกับพี่น้อง', 'ti-users'], ['ดูการ์ตูน', 'ti-device-tv']],
+    'วัยเด็ก': [['เรียน', 'ti-book'], ['กีฬา', 'ti-ball-football'], ['เพื่อน', 'ti-users'], ['ครอบครัว', 'ti-home'], ['งานอดิเรก', 'ti-palette'], ['เล่นเกม', 'ti-device-gamepad-2']],
+    'วัยรุ่น': [['เรียน', 'ti-book'], ['กีฬา', 'ti-ball-football'], ['เพื่อน', 'ti-users'], ['ครอบครัว', 'ti-home'], ['งานพาร์ตไทม์', 'ti-briefcase'], ['ความรัก', 'ti-heart'], ['งานอดิเรก', 'ti-palette']],
+    'ผู้ใหญ่': [['งาน', 'ti-briefcase'], ['ครอบครัว', 'ti-home'], ['สุขภาพ', 'ti-heartbeat'], ['เพื่อน', 'ti-users'], ['พัฒนาตัวเอง', 'ti-bulb'], ['พักผ่อน', 'ti-zzz']]
+  };
+
+  var EV_SMALL = {
+    title: 'เด็กน้อยร้องไห้กลางดึก',
+    desc: 'คืนนี้ร้องไม่หยุด พ่อแม่ลุกมาดูแลเกือบทั้งคืน',
+    choices: [
+      { label: 'ให้พ่อแม่อุ้มกล่อม', tags: [['ใกล้ชิดกับพ่อแม่', 'good'], ['พ่อแม่เหนื่อยขึ้น', 'warn']] },
+      { label: 'ปล่อยให้หลับเอง', tags: [['พ่อแม่ได้พัก', 'good'], ['ร้องนานขึ้น', 'bad']] },
+      { label: 'พาไปหาหมอ', tags: [['ค่าใช้จ่ายเพิ่ม', 'bad'], ['ตรวจสุขภาพ', 'good']] }
+    ]
+  };
+  var EV_CHILD = {
+    title: 'เพื่อนชวนเตะบอลหลังเลิกเรียน',
+    desc: 'เพื่อนในห้องรวมทีมกัน แต่วันนี้มีการบ้านเยอะด้วย',
+    choices: [
+      { label: 'ไปเล่นกับเพื่อน', tags: [['เพื่อนสนิทขึ้น', 'good'], ['กลับบ้านช้า', 'warn']] },
+      { label: 'กลับบ้านไปทำการบ้าน', tags: [['การเรียนดีขึ้น', 'good'], ['เพื่อนห่างขึ้น', 'warn']] },
+      { label: 'ชวนเพื่อนมาเล่นที่บ้าน', tags: [['ครอบครัวได้รู้จักเพื่อน', 'good'], ['บ้านวุ่นวาย', 'warn']] }
+    ]
+  };
+  var EV_TEEN = {
+    title: 'ครูแนะแนวถามว่าจะเรียนต่อสายไหน',
+    desc: 'ที่บ้านพอส่งเรียนได้ แต่ไม่เหลือมากนัก',
+    choices: [
+      { label: 'เรียนสายวิทย์-คณิต โรงเรียนประจำจังหวัด', tags: [['ค่าเรียน ฿8,000/ปี', 'bad'], ['เปิดทางเข้ามหาวิทยาลัย', 'good']] },
+      { label: 'เรียน ปวช. สายช่างยนต์', tags: [['ค่าใช้จ่ายต่ำ', 'good'], ['ต่อ ป.ตรี แคบลง', 'warn']] },
+      { label: 'ออกมาช่วยงานที่ร้านของครอบครัว', tags: [['มีรายได้ทันที', 'good'], ['หยุดเรียน', 'bad']] }
+    ]
+  };
+  var EV_ADULT = {
+    title: 'คลิปของคุณถูกแชร์ในโซเชียล',
+    desc: 'คนแชร์ต่อเป็นพันในคืนเดียว ยอดผู้ติดตามพุ่งขึ้นเรื่อยๆ',
+    choices: [
+      { label: 'โพสต์ขอบคุณและทำคอนเทนต์ต่อ', fame: true, tags: [['ชื่อเสียงเพิ่ม', 'good'], ['เสียเวลาส่วนตัว', 'warn']] },
+      { label: 'ปล่อยผ่าน ไม่ตอบอะไร', tags: [['ชีวิตเงียบสงบ', 'good']] },
+      { label: 'ขอให้ลบคลิป', fame: true, tags: [['ชื่อเสียงลดลง', 'bad'], ['ความเป็นส่วนตัวกลับมา', 'good']] }
+    ]
+  };
+
+  var STATS = [
+    { k: 'happy', label: 'ความสุข', icon: 'ti-mood-smile', v: 61 },
+    { k: 'health', label: 'สุขภาพ', icon: 'ti-heartbeat', v: 82 },
+    { k: 'smarts', label: 'สติปัญญา', icon: 'ti-brain', v: 34 },
+    { k: 'looks', label: 'หน้าตา', icon: 'ti-sparkles', v: 57 },
+    { k: 'social', label: 'สังคม', icon: 'ti-users', v: 68 },
+    { k: 'fame', label: 'ชื่อเสียง', icon: 'ti-speakerphone', v: 15, hidden: true }
+  ];
+
+  var SKILLS = [
+    ['ภาษาอังกฤษ', 42], ['ว่ายน้ำ', 66], ['ฟุตบอล', 28], ['วาดรูป', 15],
+    ['ทำอาหาร', 8], ['คอมพิวเตอร์', 54], ['เล่นกีตาร์', 3], ['พูดในที่สาธารณะ', 22]
+  ];
+
+  var RELS = [
+    { sec: 'ครอบครัว', items: [
+      { n: 'สมชาย ใจดี', r: 'พ่อ', v: 78 },
+      { n: 'สุดา ใจดี', r: 'แม่', v: 85 },
+      { n: 'ภูมิ ใจดี', r: 'น้องชาย', v: 60 }
+    ] },
+    { sec: 'เพื่อน', items: [
+      { n: 'มินท์', r: 'เพื่อนสนิท', v: 72 },
+      { n: 'ฟ้า', r: 'เพื่อนร่วมห้อง', v: 40 }
+    ] },
+    { sec: 'สัตว์เลี้ยง', items: [
+      { n: 'ถุงทอง', r: 'แมว', v: 90 }
+    ] }
+  ];
+
+  var state = { age: 15, focus: [], infantNote: false, currentEvent: null };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var logEl = $('log');
+
+  function stageOf(age) {
+    var s = STAGES[0];
+    for (var i = 0; i < STAGES.length; i++) { if (age >= STAGES[i].min) { s = STAGES[i]; } }
+    return s;
+  }
+  function eventFor(age) {
+    if (age < 5) { return EV_SMALL; }
+    if (age < 13) { return EV_CHILD; }
+    if (age < 18) { return EV_TEEN; }
+    return EV_ADULT;
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('show'); }, 1800);
+  }
+
+  function scrollLog() { logEl.scrollTop = logEl.scrollHeight; }
+  function addHeading(age) {
+    var h = document.createElement('div');
+    h.className = 'age-h';
+    h.textContent = 'อายุ: ' + age + ' ปี';
+    logEl.appendChild(h);
+  }
+  function addLine(text, star) {
+    var p = document.createElement('p');
+    if (star) {
+      var i = document.createElement('i');
+      i.className = 'ti ti-star';
+      p.appendChild(i);
+    }
+    p.appendChild(document.createTextNode(text));
+    logEl.appendChild(p);
+  }
+
+  function renderHeader() {
+    var s = stageOf(state.age);
+    $('subline').textContent = s.name + ' · อายุ ' + state.age + ' ปี · เชียงใหม่';
+    $('stageLabel').textContent = s.name;
+    $('stageIcon').className = 'ti ' + s.icon;
+  }
+
+  function renderFocus() {
+    var s = stageOf(state.age);
+    var wrap = $('chips');
+    wrap.innerHTML = '';
+    FOCUS[s.name].forEach(function (f) {
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.setAttribute('aria-pressed', state.focus.indexOf(f[0]) >= 0 ? 'true' : 'false');
+      var i = document.createElement('i');
+      i.className = 'ti ' + f[1];
+      i.setAttribute('aria-hidden', 'true');
+      b.appendChild(i);
+      b.appendChild(document.createTextNode(f[0]));
+      b.addEventListener('click', function () {
+        var idx = state.focus.indexOf(f[0]);
+        if (idx >= 0) { state.focus.splice(idx, 1); } else { state.focus.push(f[0]); }
+        renderFocus();
+      });
+      wrap.appendChild(b);
+    });
+    wrap.scrollLeft = 0;
+    var st = $('focusStatus');
+    if (state.focus.length === 0) {
+      st.textContent = 'ยังไม่ได้เลือก · ไม่เลือก = ปล่อยให้ชีวิตสุ่ม';
+    } else {
+      st.innerHTML = 'เลือกแล้ว <b>' + state.focus.length + ' อย่าง</b>: ' + state.focus.join(', ');
+    }
+  }
+
+  function renderStats(newKey) {
+    var wrap = $('stats');
+    wrap.innerHTML = '';
+    STATS.forEach(function (s) {
+      if (s.hidden) { return; }
+      var row = document.createElement('div');
+      row.className = 'stat' + (s.k === newKey ? ' new' : '');
+      var color = s.v >= 50 ? 'var(--green)' : 'var(--orange)';
+      row.innerHTML =
+        '<span class="lab"><i class="ti ' + s.icon + '" aria-hidden="true"></i>' + s.label + '</span>' +
+        '<div class="bar"><i style="width:' + s.v + '%;background:' + color + '"></i><span>' + s.v + '%</span></div>';
+      wrap.appendChild(row);
+    });
+  }
+
+  function openOverlay(id) { $(id).classList.add('open'); }
+  function closeOverlay(id) { $(id).classList.remove('open'); }
+
+  function openSheet(title, html) {
+    $('sheetTitle').textContent = title;
+    $('sheetBody').innerHTML = html;
+    openOverlay('sheetOverlay');
+    return $('sheetBody');
+  }
+  function placeholder(title) {
+    openSheet(title, '<p>ส่วนนี้ยังไม่ได้ทำ จะออกแบบทีละขั้นตามที่คุยกัน</p>');
+  }
+
+  function levelLabel(v) {
+    if (v < 20) { return 'เริ่มต้น'; }
+    if (v < 45) { return 'พอใช้'; }
+    if (v < 70) { return 'ชำนาญ'; }
+    return 'เชี่ยวชาญ';
+  }
+
+  function openSkills() {
+    var html = '<p>ระดับความชำนาญของแต่ละทักษะ</p>';
+    SKILLS.slice().sort(function (a, b) { return b[1] - a[1]; }).forEach(function (s) {
+      html += '<div class="skill"><span class="sname">' + s[0] + '</span>' +
+        '<div class="bar"><i style="width:' + s[1] + '%;background:var(--blue)"></i></div>' +
+        '<span class="lv">' + levelLabel(s[1]) + '</span></div>';
+    });
+    openSheet('ข้อมูลเชิงลึก: ทักษะ', html);
+  }
+
+  function relBar(v) {
+    var color = v >= 50 ? 'var(--green)' : 'var(--orange)';
+    return '<div class="bar"><i style="width:' + v + '%;background:' + color + '"></i></div>';
+  }
+
+  function openPerson(p) {
+    var body = openSheet(p.n, '');
+    body.innerHTML =
+      '<div class="person-head"><div class="avatar">' + p.n.charAt(0) + '</div>' +
+      '<div><div class="name">' + p.n + '</div><div class="sub">' + p.r + '</div></div></div>' +
+      '<div class="rbar" style="display:flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--blue)">ความสัมพันธ์ ' + relBar(p.v) + ' <b>' + p.v + '%</b></div>' +
+      '<div class="btn-row"><button class="btn" data-act="1">คุยกัน</button><button class="btn" data-act="1">ใช้เวลาด้วยกัน</button><button class="btn" data-act="1">ให้ของขวัญ</button></div>';
+    Array.prototype.forEach.call(body.querySelectorAll('[data-act]'), function (b) {
+      b.addEventListener('click', function () { toast('ยังไม่เปิดใช้งาน'); });
+    });
+  }
+
+  function openRelations() {
+    var list = $('relList');
+    list.innerHTML = '';
+    RELS.forEach(function (g) {
+      var sec = document.createElement('div');
+      sec.className = 'sec';
+      sec.textContent = g.sec;
+      list.appendChild(sec);
+      g.items.forEach(function (p) {
+        var b = document.createElement('button');
+        b.className = 'rel';
+        b.innerHTML =
+          '<div class="avatar">' + p.n.charAt(0) + '</div>' +
+          '<div class="info"><div class="rname">' + p.n + ' <span>(' + p.r + ')</span></div>' +
+          '<div class="rbar">ความสัมพันธ์ ' + relBar(p.v) + '</div></div>' +
+          '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
+        b.addEventListener('click', function () { openPerson(p); });
+        list.appendChild(b);
+      });
+    });
+    list.scrollTop = 0;
+    openOverlay('relOverlay');
+  }
+
+  function openSettings() {
+    var body = openSheet('ตั้งค่า', '<p>โหมดทดสอบ UI: ข้ามไปอายุที่ต้องการเพื่อดูจุดเน้นของแต่ละช่วงวัย</p><div class="btn-row" id="jumpRow"></div><div class="btn-row"><button class="btn" id="btnReset">เริ่มใหม่ทั้งหมด</button></div>');
+    var row = body.querySelector('#jumpRow');
+    [[0, 'ทารก'], [3, 'วัยหัดเดิน'], [8, 'วัยเด็ก'], [15, 'วัยรุ่น'], [25, 'ผู้ใหญ่']].forEach(function (j) {
+      var b = document.createElement('button');
+      b.className = 'btn';
+      b.textContent = j[1] + ' (' + j[0] + ')';
+      b.addEventListener('click', function () {
+        state.age = j[0];
+        state.focus = [];
+        addHeading(state.age);
+        renderHeader();
+        renderFocus();
+        scrollLog();
+        closeOverlay('sheetOverlay');
+        toast('ข้ามไปอายุ ' + j[0] + ' ปี');
+      });
+      row.appendChild(b);
+    });
+    body.querySelector('#btnReset').addEventListener('click', function () { location.reload(); });
+  }
+
+  function pressAge() {
+    state.age += 1;
+    addHeading(state.age);
+    if (state.age < 5 && state.focus.length > 0 && !state.infantNote) {
+      addLine('เด็กน้อยยังไม่รู้เรื่องหรอก ชีวิตเลยเป็นไปตามที่ผู้ใหญ่จัดให้');
+      state.infantNote = true;
+    }
+    renderHeader();
+    scrollLog();
+    showEvent(eventFor(state.age));
+  }
+
+  function showEvent(ev) {
+    state.currentEvent = ev;
+    $('evTitle').textContent = ev.title;
+    $('evDesc').textContent = ev.desc;
+    var box = $('evChoices');
+    box.innerHTML = '';
+    ev.choices.forEach(function (c) {
+      var b = document.createElement('button');
+      b.className = 'choice';
+      var t = document.createElement('b');
+      t.textContent = c.label;
+      b.appendChild(t);
+      c.tags.forEach(function (tg) {
+        var s = document.createElement('span');
+        s.className = 'tag ' + tg[1];
+        s.textContent = tg[0];
+        b.appendChild(s);
+      });
+      b.addEventListener('click', function () { choose(ev, c); });
+      box.appendChild(b);
+    });
+    $('evOverlay').querySelector('.card').scrollTop = 0;
+    openOverlay('evOverlay');
+  }
+
+  function choose(ev, c) {
+    closeOverlay('evOverlay');
+    addLine(ev.title + ': ฉันเลือก "' + c.label + '"');
+    state.focus = [];
+    renderFocus();
+    if (c.fame && !STATS[5].shown) {
+      STATS[5].hidden = false;
+      STATS[5].shown = true;
+      renderStats('fame');
+      toast('ปลดล็อกแถบชื่อเสียงแล้ว');
+    }
+    scrollLog();
+  }
+
+  function initLog() {
+    addHeading(14);
+    addLine('ฉันได้เป็นเพื่อนสนิทกับมินท์', true);
+    addLine('พ่อรับงานล่วงเวลาเพิ่ม รายได้ครอบครัวดีขึ้นเล็กน้อย แต่กลับบ้านดึกขึ้น');
+    addHeading(15);
+    addLine('ฉันใกล้จบ ม.3 แล้ว');
+  }
+
+  $('btnAge').addEventListener('click', pressAge);
+  $('btnRel').addEventListener('click', openRelations);
+  $('relClose').addEventListener('click', function () { closeOverlay('relOverlay'); });
+  $('btnDeep').addEventListener('click', openSkills);
+  $('btnStage').addEventListener('click', function () { placeholder(stageOf(state.age).name); });
+  $('btnAssets').addEventListener('click', function () { placeholder('ทรัพย์สิน'); });
+  $('btnAct').addEventListener('click', function () { placeholder('กิจกรรม'); });
+  $('btnMenu').addEventListener('click', function () { placeholder('เมนู'); });
+  $('btnSettings').addEventListener('click', openSettings);
+  $('sheetClose').addEventListener('click', function () { closeOverlay('sheetOverlay'); });
+  $('sheetOverlay').addEventListener('click', function (e) {
+    if (e.target === $('sheetOverlay')) { closeOverlay('sheetOverlay'); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeOverlay('sheetOverlay'); closeOverlay('relOverlay'); }
+  });
+
+  initLog();
+  renderHeader();
+  renderFocus();
+  renderStats();
+  scrollLog();
+})();
+</script>
+</body>
+</html>
