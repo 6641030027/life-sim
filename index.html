@@ -63,6 +63,27 @@ body {
 }
 button { font: inherit; color: inherit; touch-action: manipulation; cursor: pointer; }
 h1, h2 { margin: 0; font-weight: 600; }
+[hidden] { display: none !important; }
+.game { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.start {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  text-align: center; background: var(--surface);
+}
+.start h1 { font-size: 36px; color: var(--blue); margin-bottom: 6px; }
+.start .tagline { margin: 0 0 36px; color: var(--text2); font-size: 16px; }
+.big-btn {
+  width: 100%; max-width: 320px; min-height: 120px;
+  border: 0; border-radius: 28px;
+  background: var(--green); color: #fff;
+  font-size: 44px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+}
+.big-btn .ti { font-size: 48px; }
+.big-btn:active { filter: brightness(0.9); transform: scale(0.98); }
+.start .hint { margin-top: 16px; font-size: 13px; color: var(--text2); }
 #app {
   max-width: 520px;
   height: 100vh;
@@ -263,6 +284,14 @@ h1, h2 { margin: 0; font-weight: 600; }
 </head>
 <body>
 <div id="app">
+  <section class="start" id="start">
+    <h1>ชื่อเกม</h1>
+    <p class="tagline">เริ่มต้นชีวิตใหม่</p>
+    <button class="big-btn" id="btnRandom"><i class="ti ti-dice-5" aria-hidden="true"></i>สุ่ม</button>
+    <span class="hint">กดเพื่อสุ่มเพศ ชื่อ หน้าตา และครอบครัว</span>
+  </section>
+
+  <div class="game" id="game" hidden>
   <header class="top">
     <button class="icon-btn" id="btnMenu" aria-label="เมนู"><i class="ti ti-menu-2" aria-hidden="true"></i></button>
     <h1 class="title">ชื่อเกม</h1>
@@ -270,13 +299,13 @@ h1, h2 { margin: 0; font-weight: 600; }
   </header>
 
   <section class="char">
-    <div class="avatar">นภ</div>
+    <div class="avatar" id="avatar"></div>
     <div class="who">
-      <div class="name">นภา ใจดี</div>
+      <div class="name" id="charName"></div>
       <div class="sub" id="subline"></div>
     </div>
     <div class="money">
-      <div class="amt">฿1,200</div>
+      <div class="amt" id="money">฿0</div>
       <div class="lbl">เงินส่วนตัว</div>
     </div>
   </section>
@@ -336,6 +365,7 @@ h1, h2 { margin: 0; font-weight: 600; }
     </div>
 
     <div class="toast" id="toast" role="status"></div>
+  </div>
   </div>
 </div>
 
@@ -410,22 +440,93 @@ h1, h2 { margin: 0; font-weight: 600; }
     ['ทำอาหาร', 8], ['คอมพิวเตอร์', 54], ['เล่นกีตาร์', 3], ['พูดในที่สาธารณะ', 22]
   ];
 
-  var RELS = [
-    { sec: 'ครอบครัว', items: [
-      { n: 'สมชาย ใจดี', r: 'พ่อ', v: 78 },
-      { n: 'สุดา ใจดี', r: 'แม่', v: 85 },
-      { n: 'ภูมิ ใจดี', r: 'น้องชาย', v: 60 }
-    ] },
-    { sec: 'เพื่อน', items: [
-      { n: 'มินท์', r: 'เพื่อนสนิท', v: 72 },
-      { n: 'ฟ้า', r: 'เพื่อนร่วมห้อง', v: 40 }
-    ] },
-    { sec: 'สัตว์เลี้ยง', items: [
-      { n: 'ถุงทอง', r: 'แมว', v: 90 }
-    ] }
-  ];
+  var PLACE = 'เชียงใหม่';
+  var MALE = ['สมชาย', 'ธนกร', 'ปกรณ์', 'ณัฐพล', 'อนุชา', 'พีรพัฒน์', 'วรากร', 'กิตติ', 'ศุภชัย', 'ภูมิ', 'ธีรภัทร', 'นที', 'ก้องภพ', 'วิทยา', 'สุรชัย', 'อภิชาติ', 'ชยพล', 'รัชพล', 'เจษฎา', 'ปริญญา'];
+  var FEMALE = ['สุดา', 'นภา', 'พิมพ์ชนก', 'กัญญา', 'ปวีณา', 'ศิริพร', 'ธัญชนก', 'อรุณี', 'มณีรัตน์', 'ชลธิชา', 'จิราพร', 'รุ่งนภา', 'วรรณา', 'สุภาพร', 'ณัฐธิดา', 'พรทิพย์', 'ลลิตา', 'ปิยะดา', 'อัญชลี', 'เกศินี'];
+  var SURNAMES = ['ใจดี', 'แสงทอง', 'สุขสวัสดิ์', 'ศรีสุข', 'วงศ์สวัสดิ์', 'พรหมมา', 'ทองดี', 'บุญมี', 'จันทร์เพ็ญ', 'รัตนวงศ์', 'สายสุวรรณ', 'ชัยมงคล', 'เพชรรัตน์', 'มณีวงศ์', 'เจริญสุข', 'คำแสน', 'ปัญญาดี', 'อินทร์แก้ว', 'ขันทอง', 'ศรีวิชัย'];
+  var JOBS = ['ครู', 'พยาบาล', 'เกษตรกร', 'พนักงานบริษัท', 'ค้าขาย', 'ข้าราชการ', 'ขับรถรับจ้าง', 'วิศวกร', 'ช่างไฟฟ้า', 'พนักงานโรงงาน', 'เจ้าของร้านอาหาร', 'ตำรวจ', 'แพทย์', 'โปรแกรมเมอร์', 'ช่างตัดผม'];
+  var PET_NAMES = ['ถุงทอง', 'บอส', 'มะลิ', 'ข้าวปั้น', 'โชคดี', 'ลูกเต๋า', 'น้ำตาล', 'ทับทิม', 'หมูกรอบ', 'มินิ'];
 
-  var state = { age: 15, focus: [], infantNote: false, currentEvent: null };
+  var RELS = [];
+  var me = null;
+
+  var state = { age: 0, focus: [], infantNote: false, currentEvent: null };
+
+  function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function pick(arr) { return arr[ri(0, arr.length - 1)]; }
+  function initial(name) {
+    var s = name.replace(/^[เแโใไ]+/, '');
+    return s.charAt(0) || name.charAt(0);
+  }
+
+  function newLife() {
+    var male = Math.random() < 0.5;
+    var surname = pick(SURNAMES);
+    var first = pick(male ? MALE : FEMALE);
+    me = { male: male, first: first, name: first + ' ' + surname, surname: surname };
+
+    var momSurname = pick(SURNAMES);
+    var momAge = ri(21, 40);
+    var dadAge = Math.max(21, momAge + ri(-2, 8));
+    var dad = { n: pick(MALE) + ' ' + surname, r: 'พ่อ', v: ri(55, 100), w: 3, job: pick(JOBS), age: dadAge };
+    var mom = { n: pick(FEMALE) + ' ' + momSurname, r: 'แม่', v: ri(55, 100), w: 3, job: pick(JOBS.concat(['แม่บ้าน'])), age: momAge };
+    var family = [dad, mom];
+    var sibs = [];
+
+    var roll = Math.random();
+    var sibCount = roll < 0.4 ? 0 : (roll < 0.75 ? 1 : 2);
+    var sibMax = Math.min(15, momAge - 18);
+    if (sibMax < 2) { sibCount = 0; }
+    for (var i = 0; i < sibCount; i++) {
+      var sm = Math.random() < 0.5;
+      var sib = { n: pick(sm ? MALE : FEMALE) + ' ' + surname, r: sm ? 'พี่ชาย' : 'พี่สาว', v: ri(30, 85), w: 2, age: ri(2, sibMax) };
+      sibs.push(sib);
+      family.push(sib);
+    }
+
+    RELS = [{ sec: 'ครอบครัว', items: family }];
+    var pet = null;
+    if (Math.random() < 0.3) {
+      pet = { n: pick(PET_NAMES), r: Math.random() < 0.5 ? 'สุนัข' : 'แมว', v: ri(40, 100), w: 1 };
+      RELS.push({ sec: 'สัตว์เลี้ยง', items: [pet] });
+    }
+
+    var vals = { happy: ri(55, 100), health: ri(45, 100), smarts: ri(5, 45), looks: ri(5, 100) };
+    var sum = 0, wsum = 0;
+    family.concat(pet ? [pet] : []).forEach(function (p) { sum += p.v * p.w; wsum += p.w; });
+    vals.social = Math.round(sum / wsum);
+    STATS.forEach(function (s) { if (vals[s.k] !== undefined) { s.v = vals[s.k]; } });
+
+    logEl.innerHTML = '';
+    state.age = 0;
+    state.focus = [];
+    state.infantNote = false;
+    addHeading(0);
+    addLine('ฉันเกิดเป็น' + (male ? 'ผู้ชาย' : 'ผู้หญิง') + ' ที่' + PLACE);
+    addLine('ชื่อของฉันคือ ' + me.name);
+    addLine('พ่อของฉันคือ ' + dad.n + ' อาชีพ' + dad.job + ' (อายุ ' + dad.age + ' ปี)');
+    addLine('แม่ของฉันคือ ' + mom.n + ' อาชีพ' + mom.job + ' (อายุ ' + mom.age + ' ปี)');
+    if (sibs.length === 0) {
+      addLine('ฉันเป็นลูกคนเดียว');
+    } else {
+      sibs.forEach(function (s) { addLine('ฉันมี' + s.r + ' ชื่อ ' + s.n + ' (อายุ ' + s.age + ' ปี)'); });
+    }
+    if (pet) { addLine('ที่บ้านเลี้ยง' + pet.r + 'ชื่อ ' + pet.n); }
+
+    $('avatar').textContent = initial(me.first);
+    $('charName').textContent = me.name;
+    $('money').textContent = '฿0';
+    renderHeader();
+    renderFocus();
+    renderStats();
+  }
+
+  function personDetail(p) {
+    var bits = [];
+    if (p.job) { bits.push('อาชีพ' + p.job); }
+    if (p.age !== undefined) { bits.push('อายุ ' + p.age + ' ปี'); }
+    return bits.join(' · ');
+  }
 
   var $ = function (id) { return document.getElementById(id); };
   var logEl = $('log');
@@ -470,7 +571,7 @@ h1, h2 { margin: 0; font-weight: 600; }
 
   function renderHeader() {
     var s = stageOf(state.age);
-    $('subline').textContent = s.name + ' · อายุ ' + state.age + ' ปี · เชียงใหม่';
+    $('subline').textContent = s.name + ' · อายุ ' + state.age + ' ปี · ' + PLACE;
     $('stageLabel').textContent = s.name;
     $('stageIcon').className = 'ti ' + s.icon;
   }
@@ -557,8 +658,8 @@ h1, h2 { margin: 0; font-weight: 600; }
   function openPerson(p) {
     var body = openSheet(p.n, '');
     body.innerHTML =
-      '<div class="person-head"><div class="avatar">' + p.n.charAt(0) + '</div>' +
-      '<div><div class="name">' + p.n + '</div><div class="sub">' + p.r + '</div></div></div>' +
+      '<div class="person-head"><div class="avatar">' + initial(p.n) + '</div>' +
+      '<div><div class="name">' + p.n + '</div><div class="sub">' + p.r + (personDetail(p) ? ' · ' + personDetail(p) : '') + '</div></div></div>' +
       '<div class="rbar" style="display:flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--blue)">ความสัมพันธ์ ' + relBar(p.v) + ' <b>' + p.v + '%</b></div>' +
       '<div class="btn-row"><button class="btn" data-act="1">คุยกัน</button><button class="btn" data-act="1">ใช้เวลาด้วยกัน</button><button class="btn" data-act="1">ให้ของขวัญ</button></div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-act]'), function (b) {
@@ -578,7 +679,7 @@ h1, h2 { margin: 0; font-weight: 600; }
         var b = document.createElement('button');
         b.className = 'rel';
         b.innerHTML =
-          '<div class="avatar">' + p.n.charAt(0) + '</div>' +
+          '<div class="avatar">' + initial(p.n) + '</div>' +
           '<div class="info"><div class="rname">' + p.n + ' <span>(' + p.r + ')</span></div>' +
           '<div class="rbar">ความสัมพันธ์ ' + relBar(p.v) + '</div></div>' +
           '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
@@ -591,7 +692,7 @@ h1, h2 { margin: 0; font-weight: 600; }
   }
 
   function openSettings() {
-    var body = openSheet('ตั้งค่า', '<p>โหมดทดสอบ UI: ข้ามไปอายุที่ต้องการเพื่อดูจุดเน้นของแต่ละช่วงวัย</p><div class="btn-row" id="jumpRow"></div><div class="btn-row"><button class="btn" id="btnReset">เริ่มใหม่ทั้งหมด</button></div>');
+    var body = openSheet('ตั้งค่า', '<p>โหมดทดสอบ UI: ข้ามไปอายุที่ต้องการเพื่อดูจุดเน้นของแต่ละช่วงวัย</p><div class="btn-row" id="jumpRow"></div><div class="btn-row"><button class="btn" id="btnReset">กลับหน้าแรก (สุ่มใหม่)</button></div>');
     var row = body.querySelector('#jumpRow');
     [[0, 'ทารก'], [3, 'วัยหัดเดิน'], [8, 'วัยเด็ก'], [15, 'วัยรุ่น'], [25, 'ผู้ใหญ่']].forEach(function (j) {
       var b = document.createElement('button');
@@ -663,14 +764,12 @@ h1, h2 { margin: 0; font-weight: 600; }
     scrollLog();
   }
 
-  function initLog() {
-    addHeading(14);
-    addLine('ฉันได้เป็นเพื่อนสนิทกับมินท์', true);
-    addLine('พ่อรับงานล่วงเวลาเพิ่ม รายได้ครอบครัวดีขึ้นเล็กน้อย แต่กลับบ้านดึกขึ้น');
-    addHeading(15);
-    addLine('ฉันใกล้จบ ม.3 แล้ว');
-  }
-
+  $('btnRandom').addEventListener('click', function () {
+    newLife();
+    $('start').hidden = true;
+    $('game').hidden = false;
+    scrollLog();
+  });
   $('btnAge').addEventListener('click', pressAge);
   $('btnRel').addEventListener('click', openRelations);
   $('relClose').addEventListener('click', function () { closeOverlay('relOverlay'); });
@@ -688,11 +787,6 @@ h1, h2 { margin: 0; font-weight: 600; }
     if (e.key === 'Escape') { closeOverlay('sheetOverlay'); closeOverlay('relOverlay'); }
   });
 
-  initLog();
-  renderHeader();
-  renderFocus();
-  renderStats();
-  scrollLog();
 })();
 </script>
 </body>
