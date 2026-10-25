@@ -9,5 +9,6 @@ export const state = {
   currentEvent: null,
   me: null,             // ตัวละครของเรา
   rels: [],             // ความสัมพันธ์แบ่งหมวด [{ sec, items: [...] }]
+  skills: {},           // ค่าทักษะ { id: 0-100 } เริ่มที่ 0 (โบนัสลับสะสมเป็นเศษทศนิยมก่อนแสดงเป็นขั้น)
   stats: STAT_DEFS.map((s) => Object.assign({}, s))
 };

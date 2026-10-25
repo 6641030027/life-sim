@@ -299,3 +299,5 @@ h1, h2 { margin: 0; font-weight: 600; }
 .gender { font-weight: 700; margin-right: 5px; }
 .gender.male { color: #2b7bd6; }
 .gender.female { color: #d6568f; }
+
+.skill-cat { font-size: 13px; font-weight: 600; color: var(--blue); margin: 14px 0 8px; padding-bottom: 3px; border-bottom: 1px solid var(--border); }

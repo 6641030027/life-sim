@@ -19,7 +19,7 @@ export function rollCharacter() {
   const fam = rollFamily();
   const me = {
     male, first, name: first + ' ' + fam.surname, surname: fam.surname, country: COUNTRY,
-    look: rollLook(male), family: { id: fam.type.id, label: fam.type.label }
+    look: rollLook(male), family: { id: fam.type.id, label: fam.type.label, warmth: fam.warmth }
   };
 
   const rels = [{ sec: fam.section, items: fam.members }];
