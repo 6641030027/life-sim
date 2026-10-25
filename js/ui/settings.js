@@ -6,7 +6,7 @@ import { addHeading, scrollLog } from './log.js';
 import { renderHeader } from './header.js';
 import { renderFocus } from './focus.js';
 
-const JUMPS = [[0, 'ทารก'], [3, 'วัยหัดเดิน'], [8, 'วัยเด็ก'], [15, 'วัยรุ่น'], [25, 'ผู้ใหญ่']];
+const JUMPS = [[0, 'ทารก'], [3, 'วัยหัดเดิน'], [8, 'วัยเด็ก'], [15, 'วัยรุ่น'], [25, 'วัยหนุ่มสาว'], [40, 'ผู้ใหญ่'], [65, 'ผู้สูงอายุ']];
 
 export function openSettings() {
   const body = openSheet(
