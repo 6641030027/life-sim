@@ -6,6 +6,7 @@ export const state = {
   age: 0,
   focus: [],            // จุดเน้นของปีที่เลือกอยู่
   infantNote: false,    // ข้อความหยอกช่วงทารก แสดงครั้งเดียว
+  toddlerNote: false,   // ข้อความช่วงวัยหัดเดิน (เริ่มมีความอยากเอง) แสดงครั้งเดียว
   currentEvent: null,
   me: null,             // ตัวละครของเรา
   rels: [],             // ความสัมพันธ์แบ่งหมวด [{ sec, items: [...] }]
