@@ -1,117 +1,138 @@
-// ตัวละครเต็มตัวแบบเรียบง่าย (SVG) ที่แถบตัวละครด้านบน
-// รูปร่างเปลี่ยนตาม: อายุ (สัดส่วนหัว/ตัว, ความสูง) เพศ (เริ่มต่างชัดช่วงวัยรุ่น) และสุขภาพ (ผอมบาง-แข็งแรง)
+// ตัวละครพิกเซลเต็มตัว ประกอบจากชิ้นส่วนในคลัง js/data/parts/ แล้วแสดงที่แถบตัวละครด้านบน
+// รูปร่างเปลี่ยนตาม: อายุ (ตัว/ขายาวขึ้น) เพศ (ชายไหล่กว้าง หญิงสะโพกผาย เริ่มช่วงวัยรุ่น) และสุขภาพ (ต่ำ = ผอมบาง, สูง = ล่ำใหญ่)
+// ใบหน้าและส่วนสูงเหมือนกันทุกคน (หัวสูง 8 หน่วยเสมอ)
 
 import { $ } from '../util.js';
 import { state } from '../state.js';
+import { HAIR_STYLES, BABY_HAIR } from '../data/parts/hair.js';
+import { TOPS } from '../data/parts/tops.js';
+import { BOTTOMS } from '../data/parts/bottoms.js';
+import { ACCESSORIES } from '../data/parts/accessories.js';
 
-// ตารางความสูงสัมพันธ์ (1 = ผู้ใหญ่) และขนาดหัวต่อความสูง ตามอายุ
-const AGE_HEIGHT = [[0, 0.30], [1, 0.38], [3, 0.50], [5, 0.58], [8, 0.68], [12, 0.80], [15, 0.91], [18, 1], [70, 1], [90, 0.95]];
-const AGE_HEAD = [[0, 0.27], [1, 0.25], [3, 0.21], [6, 0.18], [12, 0.155], [18, 0.14], [90, 0.14]];
+const U = 4;            // 1 หน่วยพิกเซล = 4 หน่วยใน viewBox
+const CX = 12;          // กึ่งกลางตัว (หน่วยพิกเซล)
+const GROUND = 150;     // พื้น (พิกัด viewBox)
+const HEAD = 8;
+const EYE = '#2b2320';
+const MOUTH = '#a24a4a';
 
-function interp(table, x) {
-  if (x <= table[0][0]) { return table[0][1]; }
-  for (let i = 1; i < table.length; i++) {
-    if (x <= table[i][0]) {
-      const a = table[i - 1];
-      const b = table[i];
-      return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]);
-    }
-  }
-  return table[table.length - 1][1];
+// ความสูงลำตัว (T) และขา (L) ตามอายุ
+function sizeFor(age) {
+  if (age < 2) { return { T: 3, L: 2 }; }
+  if (age < 5) { return { T: 4, L: 4 }; }
+  if (age < 9) { return { T: 5, L: 6 }; }
+  if (age < 13) { return { T: 6, L: 8 }; }
+  if (age < 16) { return { T: 8, L: 10 }; }
+  if (age < 18) { return { T: 10, L: 12 }; }
+  return { T: 11, L: 12 };
 }
-function lerp(a, b, t) { return a + (b - a) * t; }
-function clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
-function f(n) { return Math.round(n * 10) / 10; }
 
-function hairColor(look, age) {
+function shade(hex, k) {
+  const n = parseInt(hex.slice(1), 16);
+  const c = (v) => Math.max(0, Math.min(255, Math.round(v * k)));
+  return '#' + [c(n >> 16), c((n >> 8) & 255), c(n & 255)].map((v) => (v < 16 ? '0' : '') + v.toString(16)).join('');
+}
+
+function hairColorFor(look, age) {
   if (age >= 65) { return '#e6e6e6'; }
   if (age >= 52) { return '#8d8d8d'; }
-  return look.hair;
+  return look.hairColor;
 }
 
-// ผมทรงต่างๆ: คืนค่า { back, front } (วาดหลังหัว / ทับหน้าผาก)
-function hair(style, cx, cy, r, col) {
-  const cap = '<path d="M' + f(cx - r - 0.8) + ' ' + f(cy + r * 0.05) + ' A' + f(r + 0.8) + ' ' + f(r + 0.8) + ' 0 0 1 ' + f(cx + r + 0.8) + ' ' + f(cy + r * 0.05) +
-    ' Q' + f(cx) + ' ' + f(cy - r * 0.45) + ' ' + f(cx - r - 0.8) + ' ' + f(cy + r * 0.05) + 'Z" fill="' + col + '"/>';
-  const buzz = '<path d="M' + f(cx - r) + ' ' + f(cy - r * 0.2) + ' A' + f(r) + ' ' + f(r) + ' 0 0 1 ' + f(cx + r) + ' ' + f(cy - r * 0.2) +
-    ' Q' + f(cx) + ' ' + f(cy - r * 0.7) + ' ' + f(cx - r) + ' ' + f(cy - r * 0.2) + 'Z" fill="' + col + '"/>';
-  let back = '';
-  let front = cap;
-  if (style === 'buzz') { front = buzz; }
-  if (style === 'wavy') {
-    front = cap + '<circle cx="' + f(cx - r) + '" cy="' + f(cy - r * 0.15) + '" r="' + f(r * 0.28) + '" fill="' + col + '"/>' +
-      '<circle cx="' + f(cx + r) + '" cy="' + f(cy - r * 0.15) + '" r="' + f(r * 0.28) + '" fill="' + col + '"/>' +
-      '<circle cx="' + f(cx) + '" cy="' + f(cy - r) + '" r="' + f(r * 0.3) + '" fill="' + col + '"/>';
-  }
-  if (style === 'long') {
-    back = '<rect x="' + f(cx - r - 1.5) + '" y="' + f(cy - r) + '" width="' + f(2 * r + 3) + '" height="' + f(r * 3) + '" rx="' + f(r * 0.9) + '" fill="' + col + '"/>';
-  }
-  if (style === 'bob') {
-    back = '<rect x="' + f(cx - r - 1.5) + '" y="' + f(cy - r) + '" width="' + f(2 * r + 3) + '" height="' + f(r * 2.1) + '" rx="' + f(r * 0.8) + '" fill="' + col + '"/>';
-  }
-  if (style === 'ponytail') {
-    back = '<ellipse cx="' + f(cx + r + r * 0.5) + '" cy="' + f(cy + r * 0.6) + '" rx="' + f(r * 0.38) + '" ry="' + f(r * 0.9) + '" fill="' + col + '"/>';
-  }
-  return { back: back, front: front };
-}
-
-// สร้าง SVG จากค่ารูปลักษณ์ เพศ อายุ สุขภาพ (0-100)
 export function figureSVG(look, male, age, health) {
-  const GROUND = 152;
-  const hf = interp(AGE_HEIGHT, age);
-  const H = 140 * hf;
-  const d = H * interp(AGE_HEAD, age);
-  const r = d / 2;
-  const cx = 50;
-  const g = clamp((age - 10) / 6, 0, 1);          // ความต่างระหว่างเพศ เริ่มช่วงวัยรุ่น
-  const ws = 0.4 + 0.6 * hf;                      // เด็กตัวเล็กแต่ไม่ผอมเกินไป
-  const hw = 0.82 + 0.3 * clamp(health, 0, 100) / 100;  // สุขภาพต่ำ = ผอมบาง
-  const sh = lerp(34, male ? 40 : 32, g) * ws * hw;
-  const wa = lerp(28, male ? 32 : 26, g) * ws * hw;
-  const hip = lerp(32, male ? 33 : 38, g) * ws * hw;
+  const sz = sizeFor(age);
+  const T = sz.T;
+  const L = sz.L;
+  const total = 1 + HEAD + T + L;                // คอ 1 + หัว + ลำตัว + ขา
+  const topPx = GROUND - total * U;
+  let out = '<svg viewBox="0 0 96 160" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" role="img" aria-label="ตัวละคร">';
+  // yu = ตำแหน่งแนวตั้งนับจากขอบบนของหัว (หน่วยพิกเซล)
+  const R = (x, yu, w, h, col) => {
+    if (w <= 0 || h <= 0) { return; }
+    out += '<rect x="' + (x * U) + '" y="' + (topPx + yu * U) + '" width="' + (w * U) + '" height="' + (h * U) + '" fill="' + col + '"/>';
+  };
+  const RH = (r, ox, oy, col, hang) => {          // วาดชิ้นส่วนจากคลัง (พิกัดกึ่งกลางหัว)
+    r.forEach((q) => { R(CX + q[0] + ox, q[1] + oy, q[2], q[3] === 'H' ? hang : q[3], col); });
+  };
 
-  const headTop = GROUND - H;
-  const headCy = headTop + r;
-  const neckY = headTop + d;
-  const rest = H - d;
-  const hipY = neckY + rest * 0.46;
-  const midY = neckY + rest * 0.24;
   const skin = look.skin;
-  const aw = Math.max(2.6, sh * 0.17);
-  const lw = hip * 0.45;
-  const armEnd = neckY + rest * 0.42;
-  const style = age < 2 ? 'buzz' : look.hairStyle;
-  const hr = hair(style, cx, headCy, r, hairColor(look, age));
-  const pants = '#3a4660';
+  const top = TOPS.find((t) => t.id === look.top) || TOPS[0];
+  const bot = BOTTOMS.find((b) => b.id === look.bottom) || BOTTOMS[0];
+  const hairCol = hairColorFor(look, age);
+  const ty = HEAD + 1;                            // ลำตัวเริ่มต่อจากคอ
+  const ly = ty + T;                              // ขาเริ่ม
 
-  let s = '<svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ตัวละคร">';
-  s += '<ellipse cx="50" cy="' + GROUND + '" rx="' + f(20 + 10 * hf) + '" ry="3" fill="rgba(0,0,0,0.12)"/>';
-  s += hr.back;
-  // แขน
-  [-1, 1].forEach((k) => {
-    s += '<line x1="' + f(cx + k * sh / 2) + '" y1="' + f(neckY + 3) + '" x2="' + f(cx + k * (sh / 2 + aw * 0.4)) + '" y2="' + f(armEnd) +
-      '" stroke="' + skin + '" stroke-width="' + f(aw) + '" stroke-linecap="round"/>';
+  // ความกว้างลำตัว (เลขคู่): ฐานตามอายุ + ชายวัยรุ่นขึ้นไปไหล่กว้าง + สุขภาพ
+  let w = age < 5 ? 6 : 8;
+  if (male && age >= 14) { w += 2; }
+  if (health < 35) { w -= 2; } else if (health >= 80) { w += 2; }
+  w = Math.max(6, Math.min(14, w));
+  const lw = (w - 2) / 2;                          // ความกว้างขาแต่ละข้าง
+  const sx = CX - w / 2;
+  const female = !male && age >= 13;
+
+  // เงาพื้น
+  out += '<ellipse cx="48" cy="' + (GROUND + 1) + '" rx="' + (w * 2 + 10) + '" ry="3" fill="rgba(0,0,0,.13)"/>';
+
+  // ผมด้านหลัง
+  let hairBack = [];
+  let hairFront = [];
+  if (age < 2) { hairFront = BABY_HAIR.front; } else {
+    const hs = HAIR_STYLES.find((h) => h.id === look.hair) || HAIR_STYLES[0];
+    hairBack = hs.back; hairFront = hs.front;
+  }
+  const hang = Math.max(2, Math.min(6, T - 1));
+  RH(hairBack, 0, 0, hairCol, hang);
+
+  // ขา + รองเท้า
+  const legCol = look.bottomColor;
+  const shortsRows = Math.max(1, Math.round(L * 0.45));
+  [[CX - 1 - lw, lw], [CX + 1, lw]].forEach((p) => {
+    if (bot.type === 'pants') { R(p[0], ly, p[1], L - 1, legCol); }
+    if (bot.type === 'shorts') { R(p[0], ly, p[1], shortsRows, legCol); R(p[0], ly + shortsRows, p[1], L - 1 - shortsRows, skin); }
+    if (bot.type === 'skirt') { R(p[0], ly, p[1], L - 1, skin); }
+    R(p[0], ly + L - 1, p[1], 1, look.shoe);
   });
-  // ขา
-  [-1, 1].forEach((k) => {
-    s += '<rect x="' + f(k < 0 ? cx - lw - 0.6 : cx + 0.6) + '" y="' + f(hipY - 2) + '" width="' + f(lw) + '" height="' + f(GROUND - hipY + 2) +
-      '" rx="' + f(lw * 0.4) + '" fill="' + pants + '"/>';
+
+  // แขน (ปลอกแขนตามชนิดเสื้อ + มือสีผิว)
+  const armH = Math.max(2, T - 2);
+  const sleeveRows = top.sleeve === 'long' ? armH - 2 : (top.sleeve === 'short' ? Math.min(2, armH - 1) : 0);
+  [[sx - 2, 2], [sx + w, 2]].forEach((p) => {
+    R(p[0], ty, p[1], armH, skin);
+    if (sleeveRows > 0) { R(p[0], ty, p[1], sleeveRows, look.topColor); }
   });
-  // คอและลำตัว
-  s += '<rect x="' + f(cx - d * 0.16) + '" y="' + f(neckY - 3) + '" width="' + f(d * 0.32) + '" height="6" fill="' + skin + '"/>';
-  s += '<path d="M' + f(cx - sh / 2) + ' ' + f(neckY + 1) + ' L' + f(cx + sh / 2) + ' ' + f(neckY + 1) + ' L' + f(cx + wa / 2) + ' ' + f(midY) +
-    ' L' + f(cx + hip / 2) + ' ' + f(hipY) + ' L' + f(cx - hip / 2) + ' ' + f(hipY) + ' L' + f(cx - wa / 2) + ' ' + f(midY) + 'Z" fill="' + look.shirt +
-    '" stroke="' + look.shirt + '" stroke-width="3" stroke-linejoin="round"/>';
-  // หัวและหน้า (ใบหน้าเหมือนกันทุกคน)
-  s += '<circle cx="' + cx + '" cy="' + f(headCy) + '" r="' + f(r) + '" fill="' + skin + '"/>';
-  s += hr.front;
-  const ey = headCy + r * 0.12;
-  s += '<circle cx="' + f(cx - r * 0.38) + '" cy="' + f(ey) + '" r="' + f(Math.max(0.9, r * 0.1)) + '" fill="#2b2320"/>';
-  s += '<circle cx="' + f(cx + r * 0.38) + '" cy="' + f(ey) + '" r="' + f(Math.max(0.9, r * 0.1)) + '" fill="#2b2320"/>';
-  s += '<path d="M' + f(cx - r * 0.25) + ' ' + f(headCy + r * 0.5) + ' Q' + cx + ' ' + f(headCy + r * 0.75) + ' ' + f(cx + r * 0.25) + ' ' + f(headCy + r * 0.5) +
-    '" fill="none" stroke="#2b2320" stroke-width="1" stroke-linecap="round"/>';
-  s += '</svg>';
-  return s;
+
+  // ลำตัว + ลายเสื้อ
+  R(sx, ty, w, T, look.topColor);
+  const dark = shade(look.topColor, 0.8);
+  const light = shade(look.topColor, 1.25);
+  if (age >= 5) {
+    if (top.deco === 'stripe') { for (let i = 1; i < T; i += 2) { R(sx, ty + i, w, 1, dark); } }
+    if (top.deco === 'collar') { R(CX - 2, ty, 1, 1, '#f2f2f2'); R(CX + 1, ty, 1, 1, '#f2f2f2'); R(CX - 1, ty, 2, 1, skin); }
+    if (top.deco === 'vneck') { R(CX - 1, ty, 2, 1, skin); }
+    if (top.deco === 'pocket') { R(CX - 2, ty + T - 3, 4, 2, dark); }
+    if (top.deco === 'logo') { R(CX - 1, ty + 2, 2, 2, light); }
+  }
+  // สะโพกหญิงผาย / กระโปรง
+  if (bot.type === 'skirt') {
+    R(sx - 1, ly - 1, w + 2, 2, legCol);
+    R(sx - 2, ly + 1, w + 4, 2, legCol);
+  } else {
+    R(sx, ly - 1, w, 1, legCol);                 // เอวกางเกง
+    if (female) { R(sx - 1, ly - 1, w + 2, 1, legCol); }
+  }
+
+  // คอ หัว หน้า
+  R(CX - 1, HEAD, 2, 1, skin);
+  R(CX - HEAD / 2, 0, HEAD, HEAD, skin);
+  R(CX - 3, 4, 1, 1, EYE); R(CX + 2, 4, 1, 1, EYE);
+  R(CX - 1, 6, 2, 1, MOUTH);
+  RH(hairFront, 0, 0, hairCol, hang);
+
+  const acc = ACCESSORIES.find((a) => a.id === look.acc);
+  if (acc && acc.rects.length && age >= acc.minAge) { RH(acc.rects, 0, 0, acc.color, hang); }
+
+  return out + '</svg>';
 }
 
 export function renderFigure() {
