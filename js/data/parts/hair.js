@@ -24,6 +24,7 @@ export const HAIR_STYLES = [
   { id: 'pony',     sex: 'f', label: 'ผมรวบหาง',   back: [[4, 1, 2, 1], [5, 2, 2, 4]], front: CAP.concat([[-4, 2, 8, 1]]) },
   { id: 'twin',     sex: 'f', label: 'ผมแกะ',      back: [[-7, 2, 2, 5], [5, 2, 2, 5]], front: CAP.concat([[-4, 2, 8, 1]]) },
   { id: 'bun',      sex: 'f', label: 'ผมมวย',      back: [[-2, -3, 4, 2]], front: CAP.concat([[-4, 2, 8, 1]]) },
+  { id: 'mullet',    sex: 'm', label: 'ผมมัลเล็ต',   back: [[-5, 4, 1, 3], [4, 4, 1, 3]], front: CAP.concat([[-4, 2, 8, 1]]) },
   { id: 'pixie',    sex: 'f', label: 'ผมสั้นหน้าม้า', back: [], front: [[-5, 0, 10, 2], [-5, 2, 1, 2], [4, 2, 1, 2], [-4, 2, 8, 1]] }
 ];
 
