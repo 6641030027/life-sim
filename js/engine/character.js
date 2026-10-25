@@ -6,13 +6,14 @@
 //   lines ข้อความบันทึกวันเกิด
 
 import { ri, pick } from '../util.js';
+import { rollLook } from './appearance.js';
 import { PLACE, MALE, FEMALE, SURNAMES, JOBS, PET_NAMES } from '../data/names.js';
 
 export function rollCharacter() {
   const male = Math.random() < 0.5;
   const surname = pick(SURNAMES);
   const first = pick(male ? MALE : FEMALE);
-  const me = { male, first, name: first + ' ' + surname, surname };
+  const me = { male, first, name: first + ' ' + surname, surname, look: rollLook(male) };
 
   const momSurname = pick(SURNAMES);
   const momAge = ri(21, 40);
