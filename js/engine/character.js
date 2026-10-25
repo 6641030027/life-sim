@@ -7,13 +7,13 @@
 
 import { ri, pick } from '../util.js';
 import { rollLook } from './appearance.js';
-import { PLACE, MALE, FEMALE, SURNAMES, JOBS, PET_NAMES } from '../data/names.js';
+import { COUNTRY, MALE, FEMALE, SURNAMES, JOBS, PET_NAMES } from '../data/names.js';
 
 export function rollCharacter() {
   const male = Math.random() < 0.5;
   const surname = pick(SURNAMES);
   const first = pick(male ? MALE : FEMALE);
-  const me = { male, first, name: first + ' ' + surname, surname, look: rollLook(male) };
+  const me = { male, first, name: first + ' ' + surname, surname, country: COUNTRY, look: rollLook(male) };
 
   const momSurname = pick(SURNAMES);
   const momAge = ri(21, 40);
@@ -49,7 +49,7 @@ export function rollCharacter() {
   vals.social = Math.round(sum / wsum);
 
   const lines = [];
-  lines.push('ฉันเกิดเป็น' + (male ? 'ผู้ชาย' : 'ผู้หญิง') + ' ที่' + PLACE);
+  lines.push('ฉันเกิดเป็น' + (male ? 'ผู้ชาย' : 'ผู้หญิง') + ' ในประเทศ' + COUNTRY);
   lines.push('ชื่อของฉันคือ ' + me.name);
   lines.push('พ่อของฉันคือ ' + dad.n + ' อาชีพ' + dad.job + ' (อายุ ' + dad.age + ' ปี)');
   lines.push('แม่ของฉันคือ ' + mom.n + ' อาชีพ' + mom.job + ' (อายุ ' + mom.age + ' ปี)');
