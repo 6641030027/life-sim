@@ -8,6 +8,7 @@ import { scrollLog } from './ui/log.js';
 import { openRelations } from './ui/relations.js';
 import { openSkills } from './ui/skills.js';
 import { openSettings } from './ui/settings.js';
+import { openEditor } from './ui/editor.js';
 import { startNewLife, pressAge } from './game.js';
 
 $('btnRandom').addEventListener('click', () => {
@@ -25,6 +26,7 @@ $('btnStage').addEventListener('click', () => { placeholder(stageOf(state.age).n
 $('btnAssets').addEventListener('click', () => { placeholder('ทรัพย์สิน'); });
 $('btnAct').addEventListener('click', () => { placeholder('กิจกรรม'); });
 $('btnMenu').addEventListener('click', () => { placeholder('เมนู'); });
+$('figure').addEventListener('click', openEditor);
 $('btnSettings').addEventListener('click', openSettings);
 $('sheetClose').addEventListener('click', () => { closeOverlay('sheetOverlay'); });
 $('sheetOverlay').addEventListener('click', (e) => {

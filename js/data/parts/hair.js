@@ -7,7 +7,12 @@
 export const HAIR_COLORS = [
   { id: 'black', color: '#1c1a1a', w: 80 },
   { id: 'darkbrown', color: '#33241b', w: 15 },
-  { id: 'brown', color: '#4a3424', w: 5 }
+  { id: 'brown', color: '#4a3424', w: 5 },
+  // สีย้อม: w 0 = ไม่สุ่มตอนเกิด แต่เลือกได้ในหน้าแต่งตัวละคร
+  { id: 'blond', color: '#d6b25a', w: 0 },
+  { id: 'auburn', color: '#8b3a2a', w: 0 },
+  { id: 'pink', color: '#e07aa8', w: 0 },
+  { id: 'blue', color: '#4a7fd1', w: 0 }
 ];
 
 const CAP = [[-5, 0, 10, 2], [-5, 2, 1, 3], [4, 2, 1, 3]];

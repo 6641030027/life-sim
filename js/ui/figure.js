@@ -7,7 +7,6 @@ import { state } from '../state.js';
 import { HAIR_STYLES, BABY_HAIR } from '../data/parts/hair.js';
 import { TOPS } from '../data/parts/tops.js';
 import { BOTTOMS } from '../data/parts/bottoms.js';
-import { ACCESSORIES } from '../data/parts/accessories.js';
 
 const U = 4;            // 1 หน่วยพิกเซล = 4 หน่วยใน viewBox
 const CX = 12;          // กึ่งกลางตัว (หน่วยพิกเซล)
@@ -128,9 +127,6 @@ export function figureSVG(look, male, age, health) {
   R(CX - 3, 4, 1, 1, EYE); R(CX + 2, 4, 1, 1, EYE);
   R(CX - 1, 6, 2, 1, MOUTH);
   RH(hairFront, 0, 0, hairCol, hang);
-
-  const acc = ACCESSORIES.find((a) => a.id === look.acc);
-  if (acc && acc.rects.length && age >= acc.minAge) { RH(acc.rects, 0, 0, acc.color, hang); }
 
   return out + '</svg>';
 }

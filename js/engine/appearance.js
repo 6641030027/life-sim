@@ -7,7 +7,6 @@ import { SKINS } from './../data/parts/skin.js';
 import { HAIR_COLORS, HAIR_STYLES } from './../data/parts/hair.js';
 import { TOPS, TOP_COLORS } from './../data/parts/tops.js';
 import { BOTTOMS, BOTTOM_COLORS, SHOE_COLORS } from './../data/parts/bottoms.js';
-import { ACCESSORIES } from './../data/parts/accessories.js';
 
 function weighted(list) {
   let total = 0;
@@ -31,7 +30,6 @@ export function rollLook(male) {
     topColor: pick(TOP_COLORS),
     bottom: bottom.id,
     bottomColor: pick(BOTTOM_COLORS),
-    shoe: pick(SHOE_COLORS),
-    acc: weighted(ACCESSORIES).id
+    shoe: pick(SHOE_COLORS)
   };
 }
