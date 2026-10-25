@@ -1,10 +1,30 @@
-// วัยเด็กเล็ก (ทารก/วัยหัดเดิน): สุ่มว่าเด็กทำอะไรจริงในปีที่ผ่านมา แล้วคืนโบนัสลับเล็กๆ ให้ทักษะ/สถานะ
-// ฟังก์ชันล้วน: ไม่แตะหน้าจอ/state รับ ctx แล้วคืนผลให้ผู้เรียกนำไปใช้
-// ctx = { stage, age (ปีที่ผ่านไป), warmth, siblings (จำนวนพี่น้อง), genes, selected (จุดเน้นที่เลือก) }
+// วัยเด็กเล็กถึงวัยเด็ก (ทารก/วัยหัดเดิน/วัยเด็ก): สุ่มว่าเด็กทำอะไรจริงในปีที่ผ่านมา
+// แล้วคืนผลต่อทักษะ/สถานะ/ความสัมพันธ์ ฟังก์ชันล้วน: ไม่แตะหน้าจอ/state รับ ctx แล้วคืนผลให้ผู้เรียกนำไปใช้
+// ctx = { stage, age (ปีที่ผ่านไป), warmth, siblings, genes, selected (จุดเน้นที่เลือก), smarts (ความฉลาดปัจจุบัน) }
+// ทารก/วัยหัดเดิน: ผลเป็นโบนัสลับเล็กๆ   วัยเด็ก (direct): แต้มทักษะจริง × ตัวคูณความฉลาดลับ (0.85-1.25)
 
-import { ACTIVITIES, RULES, APTITUDE } from '../data/activities.js';
+import { ACTIVITIES, RULES, APTITUDE, SCHOOL } from '../data/activities.js';
 
 export function hasYearRules(stage) { return !!ACTIVITIES[stage]; }
+
+// ตัวคูณการเรียนรู้จากความฉลาดปัจจุบัน (ลับ ผู้เล่นไม่เห็น)
+export function smartsMultiplier(smarts) { return 0.85 + 0.4 * Math.max(0, Math.min(100, smarts)) / 100; }
+
+// สุ่มจำนวนเต็มจากแต้มที่มีเศษ (เช่น 0.3 = 30% ได้ +1) รองรับค่าติดลบ
+function intOf(v, rnd) {
+  const sign = v < 0 ? -1 : 1;
+  const a = Math.abs(v);
+  return sign * (Math.floor(a) + (rnd() < a - Math.floor(a) ? 1 : 0));
+}
+
+function skillGain(id, points, ctx, rule) {
+  let m = 1;
+  if (rule.direct) { m *= smartsMultiplier(ctx.smarts); }
+  const g = APTITUDE[id];
+  // ความถนัดจากยีนซ่อน (ยีนฉลาดใช้ผ่านตัวคูณความฉลาดแล้วในวัยเด็ก จึงไม่นับซ้ำ)
+  if (g && ctx.genes && !(rule.direct && g === 'smarts')) { m *= 0.8 + 0.4 * (ctx.genes[g] / 100); }
+  return points * m;
+}
 
 export function rollYear(ctx, rand) {
   const rnd = rand || Math.random;
@@ -38,22 +58,36 @@ export function rollYear(ctx, rand) {
   }
   const skills = {};
   const stats = {};
+  const rel = { family: 0, friends: 0 };
   chosen.forEach((n) => {
     const a = acts[n];
-    const f = (0.5 + rnd() * 0.5) * rule.scale;
-    Object.keys(a.skills).forEach((id) => {
-      let apt = 1;
-      if (APTITUDE[id] && ctx.genes) { apt = 0.8 + 0.4 * (ctx.genes[APTITUDE[id]] / 100); }
-      skills[id] = (skills[id] || 0) + a.skills[id] * f * apt;
-    });
+    const f = rule.direct ? 0.8 + rnd() * 0.4 : (0.5 + rnd() * 0.5) * rule.scale;
+    Object.keys(a.skills).forEach((id) => { skills[id] = (skills[id] || 0) + skillGain(id, a.skills[id] * f, ctx, rule); });
     Object.keys(a.stats).forEach((k) => {
-      const v = a.stats[k];
-      const d = Math.floor(v) + (rnd() < v - Math.floor(v) ? 1 : 0);
+      const d = intOf(a.stats[k], rnd);
       if (d) { stats[k] = (stats[k] || 0) + d; }
     });
+    if (a.rel) {
+      Object.keys(a.rel).forEach((who) => {
+        const lo = a.rel[who][0];
+        const hi = a.rel[who][1];
+        rel[who] += lo + Math.floor(rnd() * (hi - lo + 1));
+      });
+    }
   });
   const wanted = chosen.filter((n) => sel.indexOf(n) >= 0 && m > 1);   // สิ่งที่เด็ก "อยากทำเอง" และได้ทำ
-  return { chosen: chosen, wanted: wanted, skills: skills, stats: stats };
+  return { chosen: chosen, wanted: wanted, skills: skills, stats: stats, rel: rel };
+}
+
+// โบนัสพื้นฐานจากการไปโรงเรียนในปีนั้น (ไม่ขึ้นกับจุดเน้น)
+export function schoolYear(ctx, rand) {
+  const rnd = rand || Math.random;
+  const rule = { direct: true };
+  const skills = {};
+  const stats = {};
+  Object.keys(SCHOOL.skills).forEach((id) => { skills[id] = skillGain(id, SCHOOL.skills[id] * (0.8 + rnd() * 0.4), ctx, rule); });
+  Object.keys(SCHOOL.stats).forEach((k) => { const d = intOf(SCHOOL.stats[k], rnd); if (d) { stats[k] = d; } });
+  return { skills: skills, stats: stats };
 }
 
 export function yearText(stage, chosen, wanted) {

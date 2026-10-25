@@ -25,3 +25,7 @@ export const SKILL_LEVELS = [
   { n: 6, min: 68, name: 'เชี่ยวชาญ',     tier: 'สูง' }
 ];
 export const SKILL_LEVEL_0 = { n: 0, min: 0, name: 'ยังไม่เคยฝึก', tier: '' };
+
+// ชื่อทักษะจาก id
+export const SKILL_NAME = {};
+SKILL_CATEGORIES.forEach((c) => { c.skills.forEach((k) => { SKILL_NAME[k.id] = k.name; }); });

@@ -9,7 +9,11 @@ import { renderFocus } from './ui/focus.js';
 import { renderStats } from './ui/stats.js';
 import { showEvent } from './ui/event.js';
 import { stageOf } from './data/stages.js';
-import { hasYearRules, rollYear, yearText } from './engine/growth.js';
+import { hasYearRules, rollYear, schoolYear, yearText } from './engine/growth.js';
+import { makeClassmates, socialOf } from './engine/friends.js';
+import { SCHOOL } from './data/activities.js';
+import { SKILL_NAME } from './data/skills.js';
+import { levelOf } from './ui/skills.js';
 
 export function startNewLife() {
   const c = rollCharacter();
@@ -46,6 +50,7 @@ export function pressAge() {
     state.toddlerNote = true;
   }
   if (hasYearRules(oldStage)) { applyYear(oldStage, lived); }
+  startSchoolYear();
   if (stageOf(state.age).name !== oldStage) {    // เปลี่ยนช่วงวัย: จุดเน้นเปลี่ยนตาม
     state.focus = [];
     renderFocus();
@@ -55,20 +60,83 @@ export function pressAge() {
   showEvent(eventFor(state.age));
 }
 
-// วัยเด็กเล็ก: เด็กทำอะไรจริงในปีที่ผ่านมา (สุ่ม สิ่งที่เลือกเพิ่มโอกาสตามอายุ) ได้โบนัสลับเล็กๆ น้อยๆ
+// ชั้นเรียนตามอายุ (การศึกษาภาคบังคับเริ่ม 6 ขวบ ป.1-ป.6 แล้วต่อ ม.1)
+const GRADES = { 6: 'ป.1', 7: 'ป.2', 8: 'ป.3', 9: 'ป.4', 10: 'ป.5', 11: 'ป.6', 12: 'ม.1' };
+
+function friendsSection() { return state.rels.find((g) => g.sec === 'เพื่อน'); }
+
+// สร้างเพื่อนร่วมชั้น ถ้ายังไม่มี (ตอนเข้าเรียน หรือเมื่อข้ามอายุมาจากหน้าตั้งค่า)
+function ensureClassmates() {
+  if (friendsSection() || state.age < SCHOOL.minAge) { return null; }
+  const list = makeClassmates(state.age);
+  state.rels.splice(1, 0, { sec: 'เพื่อน', items: list });
+  return list;
+}
+
+function setStat(k, fn) {
+  const s = state.stats.find((x) => x.k === k);
+  if (s) { s.v = Math.max(0, Math.min(100, Math.round(fn(s.v)))); }
+}
+
+function startSchoolYear() {
+  if (!GRADES[state.age]) { return; }
+  const first = ensureClassmates();
+  if (first && state.age === SCHOOL.minAge) {
+    addLine('ฉันเริ่มเข้าเรียนชั้น ' + GRADES[state.age] + ' และได้รู้จักเพื่อนร่วมชั้น: ' + first.map((p) => p.n).join(', '));
+  } else {
+    addLine('ปีนี้ฉันเรียนอยู่ชั้น ' + GRADES[state.age]);
+  }
+  setStat('social', () => socialOf(state.rels));
+  renderStats();
+}
+
+// เพิ่มแต้มทักษะ และเล่าในบันทึกเมื่อทักษะขึ้นขั้นใหม่
+function addSkills(gain) {
+  const ups = [];
+  Object.keys(gain).forEach((id) => {
+    const before = levelOf(state.skills[id] || 0);
+    state.skills[id] = Math.min(100, (state.skills[id] || 0) + gain[id]);
+    const after = levelOf(state.skills[id]);
+    if (after.n > before.n) { ups.push(SKILL_NAME[id] + ' ขั้น ' + after.n + ' ' + after.name); }
+  });
+  if (ups.length) { addLine('ทักษะที่ก้าวหน้า: ' + ups.join(' · ')); }
+}
+
+// เด็กทำอะไรจริงในปีที่ผ่านมา (สุ่ม สิ่งที่เลือกเพิ่มโอกาสตามอายุ)
+//   ทารก/วัยหัดเดิน: โบนัสลับเล็กๆ   วัยเด็ก: แต้มทักษะจริง × ตัวคูณความฉลาดลับ + โบนัสพื้นฐานจากโรงเรียน
 function applyYear(stage, lived) {
   const me = state.me;
   let siblings = 0;
   state.rels.forEach((g) => { g.items.forEach((p) => { if (p.r === 'พี่ชาย' || p.r === 'พี่สาว') { siblings += 1; } }); });
-  const r = rollYear({
+  const smartsStat = state.stats.find((x) => x.k === 'smarts');
+  const ctx = {
     stage: stage, age: lived, warmth: me.family ? me.family.warmth : 60,
-    siblings: siblings, genes: me.genes, selected: state.focus
-  });
+    siblings: siblings, genes: me.genes, selected: state.focus, smarts: smartsStat ? smartsStat.v : 20
+  };
+  if (stage === 'วัยเด็ก' && lived >= SCHOOL.minAge) { ensureClassmates(); }
+  const r = rollYear(ctx);
   addLine(yearText(stage, r.chosen, r.wanted));
-  Object.keys(r.skills).forEach((id) => { state.skills[id] = Math.min(100, (state.skills[id] || 0) + r.skills[id]); });
-  Object.keys(r.stats).forEach((k) => {
-    const s = state.stats.find((x) => x.k === k);
-    if (s) { s.v = Math.max(0, Math.min(100, s.v + r.stats[k])); }
+  const skills = Object.assign({}, r.skills);
+  const stats = Object.assign({}, r.stats);
+  if (stage === 'วัยเด็ก' && lived >= SCHOOL.minAge) {       // ไปโรงเรียน = โบนัสพื้นฐานฟรี
+    const sc = schoolYear(ctx);
+    Object.keys(sc.skills).forEach((id) => { skills[id] = (skills[id] || 0) + sc.skills[id]; });
+    Object.keys(sc.stats).forEach((k) => { stats[k] = (stats[k] || 0) + sc.stats[k]; });
+  }
+  addSkills(skills);
+  Object.keys(stats).forEach((k) => {
+    setStat(k, (v) => {
+      let nv = v + stats[k];
+      if (k === 'smarts' && stats[k] > 0 && me.genes) { nv = Math.min(nv, Math.max(v, me.genes.smarts)); }   // เพดานตามศักยภาพ (ยีนซ่อน)
+      return nv;
+    });
   });
+  // ความสัมพันธ์: กิจกรรมเพิ่มความสนิท ถ้าไม่ได้เล่นกับเพื่อนเลยทั้งปี เพื่อนค่อยๆ ห่างเล็กน้อย
+  const fr = friendsSection();
+  if (state.rels[0]) { state.rels[0].items.forEach((p) => { p.v = Math.min(100, p.v + r.rel.family); }); }
+  if (fr) {
+    fr.items.forEach((p) => { p.v = Math.max(15, Math.min(100, p.v + (r.rel.friends > 0 ? r.rel.friends : -2))); });
+  }
+  setStat('social', () => socialOf(state.rels));
   renderStats();
 }
