@@ -18,6 +18,7 @@
 //   choices  [{ label, tags?, auto?, outcomes: [{ p, text, fx }] }]
 //            auto = ไม่มีทางเลือกจริง (เช่น ทารก) ปุ่มเดียวแล้วสุ่มผล
 //            p = น้ำหนักของผลลัพธ์นี้ (ตัวเลข หรือ (c) => ตัวเลข)
+//            next = (c) => ฉากต่อไป {title, desc, choices} ของเหตุการณ์เดียวกัน (หลายฉากต่อเนื่อง ดู data/events/love.js)
 
 import { state } from '../state.js';
 import { clamp } from '../util.js';
@@ -115,5 +116,5 @@ export function resolve(choice) {
   const o = drawWeighted(choice.outcomes, (x) => txt(x.p, c));
   const text = txt(o.text, c);
   const tags = applyFx(o.fx || {}, c);
-  return { text: text, tags: tags };
+  return { text: text, tags: tags, next: o.next ? o.next(buildCtx()) : null };
 }

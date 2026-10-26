@@ -70,7 +70,7 @@ function choose(ev, ch) {
     const b = document.createElement('button');
     b.className = 'choice';
     fillChoice(b, 'ต่อไป', r.tags);
-    b.addEventListener('click', finish);
+    b.addEventListener('click', r.next ? () => { showEvent(r.next); } : finish);
     box.appendChild(b);
     $('evOverlay').querySelector('.card').scrollTop = 0;
     scrollLog();

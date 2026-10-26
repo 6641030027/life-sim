@@ -3,7 +3,8 @@
 //   G(c)                  ชื่อเรียกผู้ปกครองตามต้นกำเนิด   t('...{G}...')  ข้อความที่แทน {G} ด้วยผู้ปกครอง
 //   sk(c, id)             ค่าทักษะ   LV2 = ทักษะขั้น 2 ขึ้นไป (พอมีพื้นฐาน)
 
-export const o = (p, text, fx) => ({ p: p, text: text, fx: fx || {} });
+// next = (c) => ฉากต่อไปของเหตุการณ์เดียวกัน (สร้างหลังลงผลแล้ว) ใช้กับเหตุการณ์ต่อเนื่องหลายฉาก
+export const o = (p, text, fx, next) => ({ p: p, text: text, fx: fx || {}, next: next });
 export const auto = (outcomes) => [{ label: 'ดูว่าเกิดอะไรขึ้น', auto: true, outcomes: outcomes }];
 export const ch = (label, tags, outcomes) => ({ label: label, tags: tags, outcomes: outcomes });
 
