@@ -8,6 +8,7 @@
 //   friends 2       เพื่อนทุกคน           bf 3     เพื่อนสนิทที่สุด
 //   pet    2        สัตว์เลี้ยง          rel { 'แม่': 3 }  ระบุตามบทบาท
 //   love   'start' | 'end'              เริ่มคบ (เข้าหมวด "แฟน") / เลิก (กลับเป็นแฟนเก่าในเพื่อน) ดู engine/romance.js
+//   spend  { condom: 1 }               ใช้ของในกระเป๋า (นับใน state.flags รอระบบร้านค้า) ไม่ติดลบ
 //   flag   { vaxLate: 1 }               จดไว้ให้เหตุการณ์ถัดไปใช้
 //   pass 'elder'    คนในครอบครัวเสียชีวิต ('elder' = ญาติผู้ใหญ่ หรือระบุบทบาท เช่น 'ย่า') จะไม่ถูกนับเป็นผู้ดูแลอีก
 //   newSib true     มีน้องเกิดใหม่ในบ้าน
@@ -85,6 +86,7 @@ export function applyFx(fx, c) {
       tags.push(['สูญเสียคนในครอบครัว', 'bad']);
     }
   }
+  if (fx.spend) { Object.keys(fx.spend).forEach((k) => { state.flags[k] = Math.max(0, (state.flags[k] || 0) - fx.spend[k]); }); }
   if (fx.love === 'start') { startDating(); }
   if (fx.love === 'end') { endDating(); }
   if (fx.flag) { Object.keys(fx.flag).forEach((k) => { state.flags[k] = fx.flag[k]; }); }

@@ -6,6 +6,8 @@ import { state } from '../state.js';
 import { MALE, FEMALE, SURNAMES } from '../data/names.js';
 import { rn, ri, clamp, pick } from '../util.js';
 
+const isMale = (full) => MALE.indexOf(String(full).split(' ')[0]) >= 0;
+
 export const STAT_KEYS = ['looks', 'social', 'smarts', 'happy', 'health'];
 
 const section = (name) => state.rels.find((g) => g.sec === name);
@@ -20,10 +22,11 @@ export function partner() {
   const pool = fr ? fr.items.filter((x) => !x.dead) : [];
   if (pool.length && Math.random() < 0.5) {
     const f = pick(pool);
-    p = { n: f.n.split(' ')[0], full: f.n, st: st, friend: f, age: f.age };
+    p = { n: f.n.split(' ')[0], full: f.n, st: st, friend: f, age: f.age, male: isMale(f.n) };
   } else {
-    const n = pick(Math.random() < 0.5 ? MALE : FEMALE);
-    p = { n: n, full: n + ' ' + pick(SURNAMES), st: st, friend: null, age: state.age + ri(-1, 1) };
+    const male = Math.random() < 0.5;
+    const n = pick(male ? MALE : FEMALE);
+    p = { n: n, full: n + ' ' + pick(SURNAMES), st: st, friend: null, age: state.age + ri(-1, 1), male: male };
   }
   state.flags.partner = p;
   return p;
