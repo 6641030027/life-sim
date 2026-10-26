@@ -7,6 +7,7 @@
 //   carer  3        ผู้ดูแลหลัก          sibs 2  พี่น้อง          elder 2  ญาติผู้ใหญ่
 //   friends 2       เพื่อนทุกคน           bf 3     เพื่อนสนิทที่สุด
 //   pet    2        สัตว์เลี้ยง          rel { 'แม่': 3 }  ระบุตามบทบาท
+//   love   'start' | 'end'              เริ่มคบ (เข้าหมวด "แฟน") / เลิก (กลับเป็นแฟนเก่าในเพื่อน) ดู engine/romance.js
 //   flag   { vaxLate: 1 }               จดไว้ให้เหตุการณ์ถัดไปใช้
 //   pass 'elder'    คนในครอบครัวเสียชีวิต ('elder' = ญาติผู้ใหญ่ หรือระบุบทบาท เช่น 'ย่า') จะไม่ถูกนับเป็นผู้ดูแลอีก
 //   newSib true     มีน้องเกิดใหม่ในบ้าน
@@ -20,6 +21,7 @@ import { SKILL_NAME } from '../data/skills.js';
 import { MALE, FEMALE, SURNAMES } from '../data/names.js';
 import { pick, ri, clamp } from '../util.js';
 import { socialOf } from './friends.js';
+import { startDating, endDating } from './romance.js';
 
 export function setStat(k, fn) {
   const s = state.stats.find((x) => x.k === k);
@@ -83,6 +85,8 @@ export function applyFx(fx, c) {
       tags.push(['สูญเสียคนในครอบครัว', 'bad']);
     }
   }
+  if (fx.love === 'start') { startDating(); }
+  if (fx.love === 'end') { endDating(); }
   if (fx.flag) { Object.keys(fx.flag).forEach((k) => { state.flags[k] = fx.flag[k]; }); }
 
   if (fx.swapCarer) {

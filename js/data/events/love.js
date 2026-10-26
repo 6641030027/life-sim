@@ -2,7 +2,7 @@
 //
 // โอกาสสำเร็จของทุกขั้นเทียบหลอดสถานะของ "สองฝ่าย" ด้วยสูตรเดียวกัน
 //   คะแนนความน่าดึงดูด = 0.35*หน้าตา + 0.25*สังคม + 0.15*สมาร์ท + 0.15*ความสุข + 0.10*สุขภาพ
-//   p = 0.5 + (ของเรา - ของเขา)/50  จำกัดไว้ 12%-90% (ไม่มีใครแน่นอน 100% และไม่มีใครหมดหวังสนิท)
+//   p = 0.5 + (ของเรา - ของเขา)/50 + โบนัสความสนิท (ถ้าเขาเป็นเพื่อนในรายชื่อ ±25% ตามค่าสนิท) จำกัดไว้ 12%-90% (ไม่มีใครแน่นอน 100% และไม่มีใครหมดหวังสนิท)
 //   ขั้นขอเป็นแฟน และขั้น "คบกันต่อได้ไหม" ใช้ p เดียวกัน (พลาด = ไม่รับ / เลิก)
 // คนที่ถูกชอบสร้างตอนเข้าเหตุการณ์ (flags.partner) สถานะแต่ละหลอดสุ่มรอบ 55 (sd 14)
 //
@@ -14,35 +14,24 @@
 //   จากเป็นแฟน -> ถึงจุดชี้ขาด 30-240 วัน (ความรักวัยรุ่นส่วนใหญ่ไม่ยืนเกินครึ่งปี)
 // (ตัวเลขช่วงระยะเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง)
 
-import { state } from '../../state.js';
-import { MALE, FEMALE } from '../names.js';
-import { rn, ri, clamp, pick } from '../../util.js';
+import { ri, clamp } from '../../util.js';
 import { byWarmth } from '../../engine/events.js';
 import { o, ch, t, sk } from './_kit.js';
 
-const KEYS = ['looks', 'social', 'smarts', 'happy', 'health'];
+import { partner, STAT_KEYS as KEYS } from '../../engine/romance.js';
 const W = { looks: 0.35, social: 0.25, smarts: 0.15, happy: 0.15, health: 0.10 };
 
 export const attract = (st) => KEYS.reduce((a, k) => a + W[k] * st[k], 0);
 const mine = (c) => { const st = {}; KEYS.forEach((k) => { st[k] = c.stat(k); }); return attract(st); };
-
-// คนที่ชอบ: สร้างครั้งเดียวแล้วจำไว้ใน flags
-export function partner() {
-  let p = state.flags.partner;
-  if (!p) {
-    const st = {};
-    KEYS.forEach((k) => { st[k] = clamp(Math.round(rn(55, 14)), 5, 98); });
-    p = { n: pick(Math.random() < 0.5 ? MALE : FEMALE), st: st };
-    state.flags.partner = p;
-  }
-  return p;
-}
 const pn = () => partner().n;
 
 // โอกาสสำเร็จ (0-1) ของเราเทียบกับเขา + โบนัสถ้ามี
 export function chance(c, bonus) {
-  const d = mine(c) - attract(partner().st);
-  return clamp(0.5 + d / 50 + (bonus || 0), 0.12, 0.9);
+  const p = partner();
+  const d = mine(c) - attract(p.st);
+  // ถ้าเป็นเพื่อนที่รู้จักอยู่แล้ว ความสนิทเพิ่ม/ลดโอกาส (สนิท 100 = +25%, สนิท 0 = -25%)
+  const close = p.friend ? clamp((p.friend.v - 50) / 200, -0.25, 0.25) : 0;
+  return clamp(0.5 + d / 50 + close + (bonus || 0), 0.12, 0.9);
 }
 const win = (bonus) => (c) => chance(c, bonus) * 100;
 const lose = (bonus) => (c) => (1 - chance(c, bonus)) * 100;
@@ -69,7 +58,7 @@ function endStage() {
   return stage(g.s + 'เราคบกันมาได้พักใหญ่ ' + pn() + 'เริ่มเงียบลงและเราสองคนต้องคุยกันจริงจังเรื่องอนาคตของความสัมพันธ์',
     step('นั่งคุยกัน', [
       o(win(), 'เราคุยกันนานและเข้าใจกัน คืนนั้นกลับบ้านด้วยความรู้สึกว่ายังคบกันต่อได้ ไม่มีเรื่องอะไรเกิดขึ้นหลังจากนั้น', { stats: { happy: 2 }, flag: { dating: 1, loveEnd: 'together' } }),
-      o(lose(), pn() + 'บอกว่า "เราเป็นเพื่อนกันดีกว่า" ฉันนั่งนิ่งอยู่ที่ม้านั่งหน้าโรงเรียน', { stats: { happy: -3 }, flag: { dating: 0, loveEnd: 'breakup' } }, () => breakStage())
+      o(lose(), pn() + 'บอกว่า "เราเป็นเพื่อนกันดีกว่า" ฉันนั่งนิ่งอยู่ที่ม้านั่งหน้าโรงเรียน', { stats: { happy: -3 }, love: 'end', flag: { dating: 0, loveEnd: 'breakup' } }, () => breakStage())
     ]));
 }
 
@@ -96,7 +85,7 @@ function askTogether() {
   return stage(g.s + 'เราไปเดทกันอีกสองสามครั้ง ' + pn() + ' (' + trait() + ') ยิ้มให้ฉันทุกครั้งที่เจอ ถึงเวลาที่ฉันต้องตัดสินใจว่าจะขอเป็นแฟนหรือไม่',
     [
       ch('ขอเป็นแฟน', [['เสี่ยงโดนปฏิเสธ', 'warn']], [
-        o(win(), 'ใจฉันเต้นแรงจนมือสั่น ' + 'เขายิ้มกว้างและพยักหน้า "ตกลง" ฉันเดินกลับบ้านลอยๆ ทั้งทาง', { stats: { happy: 5 }, flag: { dating: 1 } }, () => endStage()),
+        o(win(), 'ใจฉันเต้นแรงจนมือสั่น ' + 'เขายิ้มกว้างและพยักหน้า "ตกลง" ฉันเดินกลับบ้านลอยๆ ทั้งทาง', { stats: { happy: 5 }, love: 'start', flag: { dating: 1 } }, () => endStage()),
         o(lose(), pn() + 'เงียบไปครู่แล้วบอกว่าเห็นฉันเป็นเพื่อนที่ดี แต่ยังไม่พร้อมเป็นแฟน ฉันยิ้มฝืนๆ ก่อนแยกย้าย', { stats: { happy: -4 }, flag: { loveEnd: 'friend' } })
       ]),
       ch('ยังไม่ขอ ขอเป็นเพื่อนสนิทต่อไปก่อน', [['ปลอดภัย', 'good']], [
