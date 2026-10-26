@@ -1,8 +1,8 @@
 // แถบจุดเน้นของปี (เลื่อนซ้าย-ขวา เลือกได้หลายอัน) และข้อความสถานะที่เลือก
 
-import { $ } from '../util.js';
-import { state } from '../state.js';
-import { FOCUS, stageOf } from '../data/stages.js';
+import { $ } from '../util.js?v=e4d2fc4c';
+import { state } from '../state.js?v=e4d2fc4c';
+import { FOCUS, stageOf } from '../data/stages.js?v=e4d2fc4c';
 
 export function renderFocus() {
   const s = stageOf(state.age);

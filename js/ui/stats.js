@@ -1,7 +1,7 @@
 // แถบสถานะ (เขียวเมื่อค่า >= 50 ส้มเมื่อต่ำกว่า) ตัวที่ hidden จะยังไม่แสดง
 
-import { $ } from '../util.js';
-import { state } from '../state.js';
+import { $ } from '../util.js?v=e4d2fc4c';
+import { state } from '../state.js?v=e4d2fc4c';
 
 export function renderStats(newKey) {
   const wrap = $('stats');

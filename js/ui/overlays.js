@@ -1,6 +1,6 @@
 // หน้าต่างซ้อนทับ: เปิด/ปิด, แผ่นเลื่อนขึ้น (sheet), ข้อความแจ้งสั้นๆ (toast)
 
-import { $ } from '../util.js';
+import { $ } from '../util.js?v=e4d2fc4c';
 
 export function openOverlay(id) { $(id).classList.add('open'); }
 export function closeOverlay(id) { $(id).classList.remove('open'); }

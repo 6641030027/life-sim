@@ -2,14 +2,14 @@
 // เหตุการณ์ใหม่ (choice.outcomes): กดแล้วสุ่มผล โชว์ผลในป็อปอัปเดิมพร้อมสรุปที่เปลี่ยนไป แล้วค่อยไปเหตุการณ์ถัดไป
 // เหตุการณ์ตัวอย่างเก่า (ยังไม่มี outcomes): กดแล้วปิด บันทึกว่าเลือกอะไร
 
-import { $ } from '../util.js';
-import { state } from '../state.js';
-import { openOverlay, closeOverlay, toast } from './overlays.js';
-import { addLine, scrollLog } from './log.js';
-import { renderFocus } from './focus.js';
-import { renderStats } from './stats.js';
-import { renderHeader } from './header.js';
-import { buildCtx, resolve, txt } from '../engine/events.js';
+import { $ } from '../util.js?v=e4d2fc4c';
+import { state } from '../state.js?v=e4d2fc4c';
+import { openOverlay, closeOverlay, toast } from './overlays.js?v=e4d2fc4c';
+import { addLine, scrollLog } from './log.js?v=e4d2fc4c';
+import { renderFocus } from './focus.js?v=e4d2fc4c';
+import { renderStats } from './stats.js?v=e4d2fc4c';
+import { renderHeader } from './header.js?v=e4d2fc4c';
+import { buildCtx, resolve, txt } from '../engine/events.js?v=e4d2fc4c';
 
 // แสดงเหตุการณ์ของปีนี้ต่อกันทีละรายการ
 export function showEvents(list) {

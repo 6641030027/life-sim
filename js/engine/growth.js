@@ -3,7 +3,7 @@
 // ctx = { stage, age (ปีที่ผ่านไป), warmth, siblings, genes, selected (จุดเน้นที่เลือก), smarts (ความฉลาดปัจจุบัน) }
 // ทารก/วัยหัดเดิน: ผลเป็นโบนัสลับเล็กๆ   วัยเด็ก (direct): แต้มทักษะจริง × ตัวคูณความฉลาดลับ (0.85-1.25)
 
-import { ACTIVITIES, RULES, APTITUDE, SCHOOL } from '../data/activities.js';
+import { ACTIVITIES, RULES, APTITUDE, SCHOOL } from '../data/activities.js?v=e4d2fc4c';
 
 export function hasYearRules(stage) { return !!ACTIVITIES[stage]; }
 

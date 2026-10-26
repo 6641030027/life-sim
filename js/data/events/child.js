@@ -15,8 +15,8 @@
 //  - วันเด็กแห่งชาติคือวันเสาร์ที่สองของเดือนมกราคม วันแม่ 12 ส.ค. วันพ่อ 5 ธ.ค. โรงเรียนมักมีกิจกรรมทำการ์ดให้พ่อแม่
 // ตัวเลขน้ำหนักโอกาสเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
-import { byCare, byWarmth } from '../../engine/events.js';
-import { o, auto, ch, t, sk, LV2 } from './_kit.js';
+import { byCare, byWarmth } from '../../engine/events.js?v=e4d2fc4c';
+import { o, auto, ch, t, sk, LV2 } from './_kit.js?v=e4d2fc4c';
 
 export const PER_YEAR = 1;
 

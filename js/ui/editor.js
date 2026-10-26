@@ -2,13 +2,13 @@
 // ลูกศรซ้าย/ขวาของแต่ละส่วนเปลี่ยนชิ้นนั้น มีสวิตช์สลับโหมด "แบบ" / "สี"
 // เพิ่มส่วนใหม่ได้โดยเติมแถวใน PARTS (ใช้คลังจาก data/parts/)
 
-import { state } from '../state.js';
-import { openSheet } from './overlays.js';
-import { renderFigure, figureSVG } from './figure.js';
-import { SKINS } from '../data/parts/skin.js';
-import { HAIR_STYLES, HAIR_COLORS } from '../data/parts/hair.js';
-import { TOPS, TOP_COLORS } from '../data/parts/tops.js';
-import { BOTTOMS, BOTTOM_COLORS, SHOE_COLORS } from '../data/parts/bottoms.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { openSheet } from './overlays.js?v=e4d2fc4c';
+import { renderFigure, figureSVG } from './figure.js?v=e4d2fc4c';
+import { SKINS } from '../data/parts/skin.js?v=e4d2fc4c';
+import { HAIR_STYLES, HAIR_COLORS } from '../data/parts/hair.js?v=e4d2fc4c';
+import { TOPS, TOP_COLORS } from '../data/parts/tops.js?v=e4d2fc4c';
+import { BOTTOMS, BOTTOM_COLORS, SHOE_COLORS } from '../data/parts/bottoms.js?v=e4d2fc4c';
 
 // แต่ละส่วน: label ชื่อ, styleKey/styles รายการแบบ, colorKey/colors รายการสี (ไม่มี = ปิดโหมดนั้น)
 function parts(male) {

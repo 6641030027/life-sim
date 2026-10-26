@@ -19,9 +19,9 @@
 // free: true = ภาคต่อของเรื่องแรก (vape -> vape-habit, love quiet -> love-again) ไม่นับโควต้าปีละ 1 เรื่อง
 // ตัวเลขน้ำหนักโอกาสเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
-import { byCare, byWarmth } from '../../engine/events.js';
-import { o, auto, ch, t, sk } from './_kit.js';
-import { LOVE_EVENTS } from './love.js';
+import { byCare, byWarmth } from '../../engine/events.js?v=e4d2fc4c';
+import { o, auto, ch, t, sk } from './_kit.js?v=e4d2fc4c';
+import { LOVE_EVENTS } from './love.js?v=e4d2fc4c';
 
 export const PER_YEAR = 1;
 

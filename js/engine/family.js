@@ -4,9 +4,9 @@
 //   warmth/care ความอบอุ่น/การดูแลของบ้าน  bioMomAge อายุแม่แท้ๆ (ถ้ารู้)  momGenes/dadGenes ยีนซ่อนของพ่อแม่แท้ๆ
 //   lines    เรื่องราวตอนเกิด (อายุ 0) แบบข้อความหลายบรรทัด   noPet ไม่มีสัตว์เลี้ยง (เช่น สถานสงเคราะห์)
 
-import { ri, pick, rn, clamp } from '../util.js';
-import { MALE, FEMALE, SURNAMES, JOBS, JOBS_ELDER } from '../data/names.js';
-import { FAMILY_TYPES } from '../data/families.js';
+import { ri, pick, rn, clamp } from '../util.js?v=e4d2fc4c';
+import { MALE, FEMALE, SURNAMES, JOBS, JOBS_ELDER } from '../data/names.js?v=e4d2fc4c';
+import { FAMILY_TYPES } from '../data/families.js?v=e4d2fc4c';
 
 function weighted(list) {
   let total = 0;

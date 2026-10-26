@@ -1,18 +1,18 @@
 // ลำดับการเล่น: เริ่มชีวิตใหม่ และกดข้ามปี
 
-import { state } from './state.js';
-import { rollCharacter } from './engine/character.js';
-import { eventsFor } from './data/events/index.js';
-import { clearLog, addHeading, addLine, scrollLog } from './ui/log.js';
-import { renderHeader, renderCharacter } from './ui/header.js';
-import { renderFocus } from './ui/focus.js';
-import { renderStats } from './ui/stats.js';
-import { showEvents } from './ui/event.js';
-import { setStat, addSkills } from './engine/effects.js';
-import { stageOf } from './data/stages.js';
-import { hasYearRules, rollYear, schoolYear, yearText } from './engine/growth.js';
-import { makeClassmates, socialOf } from './engine/friends.js';
-import { SCHOOL } from './data/activities.js';
+import { state } from './state.js?v=e4d2fc4c';
+import { rollCharacter } from './engine/character.js?v=e4d2fc4c';
+import { eventsFor } from './data/events/index.js?v=e4d2fc4c';
+import { clearLog, addHeading, addLine, scrollLog } from './ui/log.js?v=e4d2fc4c';
+import { renderHeader, renderCharacter } from './ui/header.js?v=e4d2fc4c';
+import { renderFocus } from './ui/focus.js?v=e4d2fc4c';
+import { renderStats } from './ui/stats.js?v=e4d2fc4c';
+import { showEvents } from './ui/event.js?v=e4d2fc4c';
+import { setStat, addSkills } from './engine/effects.js?v=e4d2fc4c';
+import { stageOf } from './data/stages.js?v=e4d2fc4c';
+import { hasYearRules, rollYear, schoolYear, yearText } from './engine/growth.js?v=e4d2fc4c';
+import { makeClassmates, socialOf } from './engine/friends.js?v=e4d2fc4c';
+import { SCHOOL } from './data/activities.js?v=e4d2fc4c';
 
 export function startNewLife() {
   const c = rollCharacter();

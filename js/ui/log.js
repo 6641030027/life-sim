@@ -1,6 +1,6 @@
 // บันทึกชีวิต (ข้อความไล่ตามอายุ)
 
-import { $ } from '../util.js';
+import { $ } from '../util.js?v=e4d2fc4c';
 
 export function clearLog() {
   $('log').innerHTML = '';

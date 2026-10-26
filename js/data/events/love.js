@@ -14,11 +14,11 @@
 //   จากเป็นแฟน -> ถึงจุดชี้ขาด 30-240 วัน (ความรักวัยรุ่นส่วนใหญ่ไม่ยืนเกินครึ่งปี)
 // (ตัวเลขช่วงระยะเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง)
 
-import { ri, clamp } from '../../util.js';
-import { byWarmth } from '../../engine/events.js';
-import { o, ch, t, sk } from './_kit.js';
+import { ri, clamp } from '../../util.js?v=e4d2fc4c';
+import { byWarmth } from '../../engine/events.js?v=e4d2fc4c';
+import { o, ch, t, sk } from './_kit.js?v=e4d2fc4c';
 
-import { partner, STAT_KEYS as KEYS } from '../../engine/romance.js';
+import { partner, STAT_KEYS as KEYS } from '../../engine/romance.js?v=e4d2fc4c';
 const W = { looks: 0.35, social: 0.25, smarts: 0.15, happy: 0.15, health: 0.10 };
 
 export const attract = (st) => KEYS.reduce((a, k) => a + W[k] * st[k], 0);

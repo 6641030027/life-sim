@@ -2,11 +2,11 @@
 // look เก็บ id/สี ของแต่ละชิ้น ส่วนการประกอบเป็นภาพอยู่ที่ ui/figure.js
 // เพิ่มความหลากหลายได้โดยเติมแถวในไฟล์คลัง ไม่ต้องแก้ไฟล์นี้
 
-import { pick } from '../util.js';
-import { SKINS } from './../data/parts/skin.js';
-import { HAIR_COLORS, HAIR_STYLES } from './../data/parts/hair.js';
-import { TOPS, TOP_COLORS } from './../data/parts/tops.js';
-import { BOTTOMS, BOTTOM_COLORS, SHOE_COLORS } from './../data/parts/bottoms.js';
+import { pick } from '../util.js?v=e4d2fc4c';
+import { SKINS } from './../data/parts/skin.js?v=e4d2fc4c';
+import { HAIR_COLORS, HAIR_STYLES } from './../data/parts/hair.js?v=e4d2fc4c';
+import { TOPS, TOP_COLORS } from './../data/parts/tops.js?v=e4d2fc4c';
+import { BOTTOMS, BOTTOM_COLORS, SHOE_COLORS } from './../data/parts/bottoms.js?v=e4d2fc4c';
 
 function weighted(list) {
   let total = 0;

@@ -4,14 +4,14 @@
 // ไฟล์นี้จึงไม่ถูก import ใน index.js และไม่มีผลกับเกมตอนนี้
 //
 // วิธีเปิดใช้ภายหลัง: ใน data/events/index.js เพิ่ม
-//   import { EVENTS as SKILL_EV } from './skill-events.js';
+//   import { EVENTS as SKILL_EV } from './skill-events.js?v=e4d2fc4c';
 // แล้วรวมเข้ากับ CHILD ตอนเรียก rollEvents (เช่น rollEvents(CHILD.concat(SKILL_EV), CHILD_N))
 //
 // เงื่อนไขของเหตุการณ์ในไฟล์นี้: need: (c) => ทักษะถึงขั้น 2 ขึ้นไป (LV2 = 9 แต้ม) ลงอายุ 6-12
 // ทิศทางที่คิดไว้สำหรับอนาคต: ผูกกับอาชีพ (เช่น คัดตัวนักกีฬา -> เส้นทางนักกีฬา) และเพิ่มเหตุการณ์ทักษะอื่นๆ ในชุดเดียวกัน
 
-import { byCare, byWarmth } from '../../engine/events.js';
-import { o, ch, t, sk, LV2 } from './child.js';
+import { byCare, byWarmth } from '../../engine/events.js?v=e4d2fc4c';
+import { o, ch, t, sk, LV2 } from './child.js?v=e4d2fc4c';
 
 export const EVENTS = [
   {

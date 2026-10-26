@@ -20,9 +20,9 @@
 //            p = น้ำหนักของผลลัพธ์นี้ (ตัวเลข หรือ (c) => ตัวเลข)
 //            next = (c) => ฉากต่อไป {title, desc, choices} ของเหตุการณ์เดียวกัน (หลายฉากต่อเนื่อง ดู data/events/love.js)
 
-import { state } from '../state.js';
-import { clamp } from '../util.js';
-import { applyFx } from './effects.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { clamp } from '../util.js?v=e4d2fc4c';
+import { applyFx } from './effects.js?v=e4d2fc4c';
 
 // ผู้ดูแลหลัก = คนที่ใกล้ชิดที่สุดและอยู่ด้วยกัน เรียงตามความน่าจะเป็นที่เลี้ยงทารก
 const CARER_ORDER = ['แม่', 'แม่บุญธรรม', 'แม่อุปถัมภ์', 'พี่เลี้ยง', 'ย่า', 'ยาย', 'ป้า', 'พ่อ', 'พ่อบุญธรรม', 'พ่ออุปถัมภ์', 'ปู่', 'ตา', 'ลุง'];

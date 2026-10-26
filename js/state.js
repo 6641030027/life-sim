@@ -1,6 +1,6 @@
 // สถานะเกมที่เปลี่ยนแปลงระหว่างเล่น (ที่เดียว ทุกโมดูลอ่าน/เขียนจากที่นี่)
 
-import { STAT_DEFS } from './data/stats.js';
+import { STAT_DEFS } from './data/stats.js?v=e4d2fc4c';
 
 export const state = {
   age: 0,

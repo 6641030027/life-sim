@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>เกมจำลองชีวิต</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=e4d2fc4c">
 </head>
 <body>
 <div id="app">
@@ -99,7 +99,7 @@
 
 <script type="module">
   // โหลดเกม ถ้าไฟล์ในแคชเก่า/ใหม่ปนกันจนโหลดไม่ได้ จะแจ้งบนหน้าจอแทนที่ปุ่มจะกดไม่ติดเฉยๆ
-  import('./js/main.js').catch((e) => {
+  import('./js/main.js?v=e4d2fc4c').catch((e) => {
     const d = document.createElement('div');
     d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;padding:12px;border-radius:12px;background:#b3261e;color:#fff;font:14px sans-serif;z-index:9999';
     d.textContent = 'โหลดเกมไม่สำเร็จ ลองรีเฟรชแบบล้างแคช (Ctrl+Shift+R หรือล้างข้อมูลเว็บไซต์) ข้อผิดพลาด: ' + (e && e.message);

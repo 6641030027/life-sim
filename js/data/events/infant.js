@@ -8,7 +8,7 @@
 // งานทดลอง Bucharest Early Intervention Project (การเลี้ยงในสถาบันเทียบกับบ้านอุปถัมภ์: ผู้ดูแลที่คงที่และคุณภาพการดูแลช่วยให้พัฒนาการดีขึ้น)
 // ตัวเลขน้ำหนักโอกาสส่วนใหญ่เป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
-import { byCare, byWarmth } from '../../engine/events.js';
+import { byCare, byWarmth } from '../../engine/events.js?v=e4d2fc4c';
 
 export const PER_YEAR = 1;   // จำนวนเหตุการณ์ต่อปี (1 เรื่อง เผื่อให้เหตุพิเศษที่เกิดจากจุดเน้น ทักษะ หรือค่าสถานะในอนาคต)
 

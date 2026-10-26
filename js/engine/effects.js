@@ -15,14 +15,14 @@
 //   swapCarer 'แม่อุปถัมภ์'              เปลี่ยนตัวผู้ดูแลคนนั้นเป็นคนใหม่
 // คืนค่า: แท็กสรุปผล [[ข้อความ, 'good'|'bad']] ไว้โชว์ท้ายเหตุการณ์
 
-import { state } from '../state.js';
-import { addLine } from '../ui/log.js';
-import { levelOf } from '../ui/skills.js';
-import { SKILL_NAME } from '../data/skills.js';
-import { MALE, FEMALE, SURNAMES } from '../data/names.js';
-import { pick, ri, clamp } from '../util.js';
-import { socialOf } from './friends.js';
-import { startDating, endDating } from './romance.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { addLine } from '../ui/log.js?v=e4d2fc4c';
+import { levelOf } from '../ui/skills.js?v=e4d2fc4c';
+import { SKILL_NAME } from '../data/skills.js?v=e4d2fc4c';
+import { MALE, FEMALE, SURNAMES } from '../data/names.js?v=e4d2fc4c';
+import { pick, ri, clamp } from '../util.js?v=e4d2fc4c';
+import { socialOf } from './friends.js?v=e4d2fc4c';
+import { startDating, endDating } from './romance.js?v=e4d2fc4c';
 
 export function setStat(k, fn) {
   const s = state.stats.find((x) => x.k === k);

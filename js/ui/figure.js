@@ -2,11 +2,11 @@
 // รูปร่างเปลี่ยนตาม: อายุ (ตัว/ขายาวขึ้น) เพศ (ชายไหล่กว้าง หญิงสะโพกผาย เริ่มช่วงวัยรุ่น) และสุขภาพ (ต่ำ = ผอมบาง, สูง = ล่ำใหญ่)
 // ใบหน้าและส่วนสูงเหมือนกันทุกคน (หัวสูง 8 หน่วยเสมอ)
 
-import { $ } from '../util.js';
-import { state } from '../state.js';
-import { HAIR_STYLES, BABY_HAIR } from '../data/parts/hair.js';
-import { TOPS } from '../data/parts/tops.js';
-import { BOTTOMS } from '../data/parts/bottoms.js';
+import { $ } from '../util.js?v=e4d2fc4c';
+import { state } from '../state.js?v=e4d2fc4c';
+import { HAIR_STYLES, BABY_HAIR } from '../data/parts/hair.js?v=e4d2fc4c';
+import { TOPS } from '../data/parts/tops.js?v=e4d2fc4c';
+import { BOTTOMS } from '../data/parts/bottoms.js?v=e4d2fc4c';
 
 const U = 4;            // 1 หน่วยพิกเซล = 4 หน่วยใน viewBox
 const CX = 12;          // กึ่งกลางตัว (หน่วยพิกเซล)

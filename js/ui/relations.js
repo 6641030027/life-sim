@@ -1,8 +1,8 @@
 // หน้าความสัมพันธ์ (ซ้อนทับ แบ่งหมวด) และรายละเอียดรายคน
 
-import { $, initial } from '../util.js';
-import { state } from '../state.js';
-import { openOverlay, openSheet, toast } from './overlays.js';
+import { $, initial } from '../util.js?v=e4d2fc4c';
+import { state } from '../state.js?v=e4d2fc4c';
+import { openOverlay, openSheet, toast } from './overlays.js?v=e4d2fc4c';
 
 function relBar(v) {
   const color = v >= 50 ? 'var(--green)' : 'var(--orange)';

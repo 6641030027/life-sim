@@ -1,7 +1,7 @@
 // เพื่อนและค่าสังคม (ฟังก์ชันล้วน ไม่แตะหน้าจอ)
 
-import { ri, pick, rn, clamp } from '../util.js';
-import { MALE, FEMALE, SURNAMES } from '../data/names.js';
+import { ri, pick, rn, clamp } from '../util.js?v=e4d2fc4c';
+import { MALE, FEMALE, SURNAMES } from '../data/names.js?v=e4d2fc4c';
 
 // สร้างเพื่อนร่วมชั้น 3-5 คน ตอนเริ่มเข้าโรงเรียน
 export function makeClassmates(age) {

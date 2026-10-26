@@ -9,7 +9,7 @@
 // WHO แนะนำเด็ก 2-4 ปีดูจอนิ่งๆ ไม่เกินวันละ 1 ชั่วโมง, โรคมือเท้าปากพบมากในเด็กต่ำกว่า 5 ปี ระบาดตามศูนย์เด็กเล็กและหน้าฝน (กรมควบคุมโรค/ข่าว)
 // ตัวเลขน้ำหนักโอกาสเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
-import { byCare, byWarmth, txt } from '../../engine/events.js';
+import { byCare, byWarmth, txt } from '../../engine/events.js?v=e4d2fc4c';
 
 export const PER_YEAR = 1;
 

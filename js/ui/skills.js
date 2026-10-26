@@ -1,9 +1,9 @@
 // ข้อมูลเชิงลึก: ทักษะแบ่งตามหมวด และระดับความชำนาญ 6 ขั้น 3 กลุ่ม (หน้าต่างเลื่อนขึ้น)
 // แสดงเฉพาะทักษะที่ถึงขั้น 1 แล้ว (ค่าต่ำกว่า 1 คือโบนัสลับที่ยังไม่โผล่)
 
-import { state } from '../state.js';
-import { SKILL_CATEGORIES, SKILL_LEVELS, SKILL_LEVEL_0 } from '../data/skills.js';
-import { openSheet } from './overlays.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { SKILL_CATEGORIES, SKILL_LEVELS, SKILL_LEVEL_0 } from '../data/skills.js?v=e4d2fc4c';
+import { openSheet } from './overlays.js?v=e4d2fc4c';
 
 export function levelOf(v) {
   let lv = SKILL_LEVEL_0;

@@ -2,9 +2,9 @@
 //
 // คนที่ชอบมี 50% ที่เป็นเพื่อนที่รู้จักอยู่แล้วในรายชื่อ (ถ้ามี) ความสนิท (v) ของเพื่อนคนนั้นจะเพิ่มโอกาสสำเร็จ (ดู love.js)
 
-import { state } from '../state.js';
-import { MALE, FEMALE, SURNAMES } from '../data/names.js';
-import { rn, ri, clamp, pick } from '../util.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { MALE, FEMALE, SURNAMES } from '../data/names.js?v=e4d2fc4c';
+import { rn, ri, clamp, pick } from '../util.js?v=e4d2fc4c';
 
 const isMale = (full) => MALE.indexOf(String(full).split(' ')[0]) >= 0;
 

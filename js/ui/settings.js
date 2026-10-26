@@ -1,10 +1,10 @@
 // ตั้งค่า: โหมดทดสอบ UI (ข้ามไปอายุที่ต้องการ) และกลับหน้าแรก
 
-import { state } from '../state.js';
-import { closeOverlay, openSheet, toast } from './overlays.js';
-import { addHeading, scrollLog } from './log.js';
-import { renderHeader } from './header.js';
-import { renderFocus } from './focus.js';
+import { state } from '../state.js?v=e4d2fc4c';
+import { closeOverlay, openSheet, toast } from './overlays.js?v=e4d2fc4c';
+import { addHeading, scrollLog } from './log.js?v=e4d2fc4c';
+import { renderHeader } from './header.js?v=e4d2fc4c';
+import { renderFocus } from './focus.js?v=e4d2fc4c';
 
 const JUMPS = [[0, 'ทารก'], [3, 'วัยหัดเดิน'], [8, 'วัยเด็ก'], [15, 'วัยรุ่น'], [25, 'วัยหนุ่มสาว'], [40, 'ผู้ใหญ่'], [65, 'ผู้สูงอายุ']];
 

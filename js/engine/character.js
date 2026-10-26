@@ -5,10 +5,10 @@
 //   vals  ค่าสถานะเริ่มต้น { happy, health, smarts, looks, social }
 //   lines ข้อความบันทึกวันเกิด (เรื่องราวตอนอายุ 0)
 
-import { ri, pick, rn, clamp } from '../util.js';
-import { rollLook } from './appearance.js';
-import { rollFamily, POP, POP_SD } from './family.js';
-import { COUNTRY, MALE, FEMALE, PET_NAMES } from '../data/names.js';
+import { ri, pick, rn, clamp } from '../util.js?v=e4d2fc4c';
+import { rollLook } from './appearance.js?v=e4d2fc4c';
+import { rollFamily, POP, POP_SD } from './family.js?v=e4d2fc4c';
+import { COUNTRY, MALE, FEMALE, PET_NAMES } from '../data/names.js?v=e4d2fc4c';
 
 // ขยายส่วนเบี่ยงเบนจากค่ากลาง (ค่าที่ถ่วงน้ำหนักหลายส่วนแล้วแคบเกินจริง)
 function spread(x, mean, k) { return mean + k * (x - mean); }

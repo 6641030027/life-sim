@@ -1,6 +1,6 @@
 // เหตุการณ์ความใกล้ชิดของคู่รัก (เฉพาะผู้ใหญ่) แยกไฟล์ต่างหาก ตั้งเงื่อนไขอายุ 18 ปีขึ้นไป ทั้งตัวผู้เล่นและแฟน
 // ซ่อนไว้ ยังไม่ import จนกว่าจะทำช่วงวัยหนุ่มสาว (young.js) ให้รวม EVENTS นี้ไปในรายการของช่วงวัยนั้น
-//   import { EVENTS as INTIMACY } from './intimacy.js';   แล้วใส่ ...INTIMACY ใน EVENTS ของ young/adult/elder
+//   import { EVENTS as INTIMACY } from './intimacy.js?v=e4d2fc4c';   แล้วใส่ ...INTIMACY ใน EVENTS ของ young/adult/elder
 //   (เป็นภาคต่อ free: ไม่นับโควต้า เกิดซ้อนได้ ตรวจโอกาสทุกปีตราบใดที่ยังเป็นแฟนกัน)
 //
 // เนื้อหาไม่บรรยายฉากตรงๆ เน้นการตัดสินใจและผลที่ตามมา (การป้องกัน ท้อง โรค ความสัมพันธ์)
@@ -22,11 +22,11 @@
 //   โอกาสตั้งครรภ์ (เฉพาะคู่ชาย-หญิง) ต่อช่วงเหตุการณ์: ไม่ป้องกัน 15% / ใส่ถุง 2%    โอกาสติดเชื้อทางเพศสัมพันธ์: ไม่ป้องกัน 10% / ใส่ถุง 1%
 //   (ค่าประมาณเพื่อเกม เป็นภาพแทนการทำต่อเนื่องหลายครั้งในช่วงนั้น ไม่ใช่ความเสี่ยงต่อครั้ง)
 
-import { state } from '../../state.js';
-import { clamp } from '../../util.js';
-import { partner } from '../../engine/romance.js';
-import { attract } from './love.js';
-import { o, ch } from './_kit.js';
+import { state } from '../../state.js?v=e4d2fc4c';
+import { clamp } from '../../util.js?v=e4d2fc4c';
+import { partner } from '../../engine/romance.js?v=e4d2fc4c';
+import { attract } from './love.js?v=e4d2fc4c';
+import { o, ch } from './_kit.js?v=e4d2fc4c';
 
 const BASE = { m: 0.30, f: 0.14 };
 
