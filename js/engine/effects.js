@@ -5,6 +5,7 @@
 //   skills { motor: 0.5 }                เพิ่มแต้มทักษะ
 //   family 2        ทุกคนในครอบครัวที่อยู่ด้วยกัน (ไม่นับคนที่ไม่ได้อยู่ด้วย)
 //   carer  3        ผู้ดูแลหลัก          sibs 2  พี่น้อง          elder 2  ญาติผู้ใหญ่
+//   friends 2       เพื่อนทุกคน           bf 3     เพื่อนสนิทที่สุด
 //   pet    2        สัตว์เลี้ยง          rel { 'แม่': 3 }  ระบุตามบทบาท
 //   flag   { vaxLate: 1 }               จดไว้ให้เหตุการณ์ถัดไปใช้
 //   newSib true     มีน้องเกิดใหม่ในบ้าน
@@ -62,6 +63,8 @@ export function applyFx(fx, c) {
   if (fx.sibs) { bump(c.sibs, fx.sibs, rel); }
   if (fx.elder) { bump(c.fam.filter((p) => ELDER_ROLES.indexOf(p.r) >= 0 && !p.note), fx.elder, rel); }
   if (fx.pet && c.pet) { bump([c.pet], fx.pet, rel); }
+  if (fx.friends) { bump(c.friends, fx.friends, rel); }
+  if (fx.bf && c.bf) { bump([c.bf], fx.bf, rel); }
   if (fx.rel) {
     Object.keys(fx.rel).forEach((role) => { bump(c.fam.filter((p) => p.r === role), fx.rel[role], rel); });
   }

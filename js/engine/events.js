@@ -6,7 +6,8 @@
 //   family   ['nuclear', ...] เฉพาะต้นกำเนิดเหล่านี้ (ไม่ใส่ = ทุกคนเจอได้)
 //   sub      ชนิดย่อยของ care: 'adopted' | 'foster' | 'institution'
 //   reason   เหตุผลของครอบครัว (key ใน data/families.js)
-//   need     (c) => true/false เงื่อนไขเพิ่ม เช่น มีสัตว์เลี้ยง มีพี่น้อง
+//   need     (c) => true/false เงื่อนไขเพิ่ม เช่น มีสัตว์เลี้ยง มีพี่น้อง (c.friends, c.bf, c.male, c.stat('smarts') ใช้ได้)
+//   must     true = ถ้าถึงอายุและเงื่อนไขแล้วต้องเกิดก่อนเรื่องอื่น (เช่น วันแรกที่โรงเรียน)
 //   w        น้ำหนักโอกาสถูกสุ่ม (ตัวเลข หรือ (c) => ตัวเลข)
 //   title, desc  ข้อความ หรือ (c) => ข้อความ
 //   choices  [{ label, tags?, auto?, outcomes: [{ p, text, fx }] }]
@@ -25,6 +26,8 @@ export function buildCtx() {
   const f = me.family;
   const fam = state.rels[0] ? state.rels[0].items : [];
   const petGroup = state.rels.find((g) => g.sec === 'สัตว์เลี้ยง');
+  const frGroup = state.rels.find((g) => g.sec === 'เพื่อน');
+  const friends = frGroup ? frGroup.items : [];
   let cg = null;
   for (let i = 0; i < CARER_ORDER.length && !cg; i++) {
     cg = fam.find((p) => p.r === CARER_ORDER[i] && !p.note) || null;
@@ -35,7 +38,10 @@ export function buildCtx() {
     pet: petGroup ? petGroup.items[0] : null, cg: cg, cgRole: cg ? cg.r : 'ผู้ดูแล',
     preterm: !!me.preterm, flags: state.flags, skills: state.skills,
     elder: fam.find((p) => ['ย่า', 'ยาย', 'ปู่', 'ตา'].indexOf(p.r) >= 0 && !p.note) || null,
-    mom: fam.find((p) => p.r === 'แม่' && !p.note) || null
+    mom: fam.find((p) => p.r === 'แม่' && !p.note) || null,
+    male: !!me.male, friends: friends,
+    bf: friends.length ? friends.reduce((a, b) => (b.v > a.v ? b : a)) : null,
+    stat: (k) => { const s = state.stats.find((x) => x.k === k); return s ? s.v : 0; }
   };
 }
 
@@ -74,7 +80,8 @@ export function rollEvents(list, count) {
   const out = [];
   for (let i = 0; i < count && pool.length; i++) {
     let src = pool;
-    if (i === 0) {
+    const must = pool.filter((e) => e.must);
+    if (i === 0 && must.length) { src = must; } else if (i === 0) {
       // เรื่องเฉพาะต้นกำเนิดที่ "เป็นเอกลักษณ์" (ไม่ใช่ครอบครัวเดี่ยว/ขยายที่คนส่วนใหญ่เป็น) ได้สิทธิ์ก่อน
       const special = pool.filter((e) => e.sub || e.reason ||
         (e.family && e.family.indexOf('nuclear') < 0 && e.family.indexOf('extended') < 0));
