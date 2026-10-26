@@ -7,7 +7,7 @@ import { stageOf } from '../data/stages.js';
 
 export function renderHeader() {
   const s = stageOf(state.age);
-  $('subline').textContent = s.name + ' · อายุ ' + state.age + ' ปี · ' + state.me.country;
+  $('subline').textContent = s.name + ' · อายุ ' + state.age + ' ปี · ' + (state.me.residence || state.me.country);
   $('stageLabel').textContent = s.name;
   $('stageIcon').className = 'ti ' + s.icon;
   renderFigure();

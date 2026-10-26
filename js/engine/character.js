@@ -18,7 +18,9 @@ export function rollCharacter() {
   const first = pick(male ? MALE : FEMALE);
   const fam = rollFamily();
   const me = {
-    male, first, name: first + ' ' + fam.surname, surname: fam.surname, country: COUNTRY,
+    male, first, name: first + ' ' + fam.surname, surname: fam.surname,
+    country: COUNTRY,       // ประเทศที่เกิด (ไม่เปลี่ยน)
+    residence: COUNTRY,     // ประเทศที่อาศัยอยู่ตอนนี้ (เปลี่ยนได้เมื่อย้ายประเทศ/ไปเรียนต่างประเทศ)
     look: rollLook(male), family: { id: fam.type.id, label: fam.type.label, warmth: fam.warmth, care: fam.care, sub: fam.sub, reason: fam.reason, form: fam.form }
   };
 
