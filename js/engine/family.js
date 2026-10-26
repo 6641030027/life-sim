@@ -90,6 +90,9 @@ export function rollFamily() {
   let warmth = type.warmth;
   let care = type.care;
   let bioMomAge = null;
+  let sub = null;       // ชนิดย่อย (บุตรบุญธรรม/อุปถัมภ์/สถานสงเคราะห์)
+  let reason = null;    // เหตุผลที่ครอบครัวเป็นแบบนี้ (key ใน data/families.js)
+  let form = null;      // ญาติที่เลี้ยง (ปู่ย่า/ตายาย/ลุงป้า)
   const intro = (t) => pick(t.intros);
 
   if (type.id === 'nuclear' || type.id === 'extended') {
@@ -126,19 +129,24 @@ export function rollFamily() {
     surname = mySurname;
     const mom = person('แม่', false, momAge, mySurname, 3);
     members.push(mom);
-    lines.push(intro(type), pick(type.reasons), describe(mom));
+    const rs = pick(type.reasons);
+    reason = rs.key;
+    lines.push(intro(type), rs.text, describe(mom));
     bioMomAge = momAge;
     sibs = rollSiblings(momAge, mySurname, [0.75, 0.97]);
   } else if (type.id === 'single-dad') {
     const dadAge = ri(22, 45);
     const dad = person('พ่อ', true, dadAge, mySurname, 3);
     members.push(dad);
-    lines.push(intro(type), pick(type.reasons), describe(dad));
+    const rs = pick(type.reasons);
+    reason = rs.key;
+    lines.push(intro(type), rs.text, describe(dad));
     sibs = rollSiblings(dadAge, mySurname, [0.75, 0.97]);
   } else if (type.id === 'relatives') {
-    const reason = pick(type.reasons);
-    const parentAge = reason.alive === 'mom' ? ri(16, 19) : ri(20, 38);
-    const form = pick(['ปู่ย่า', 'ตายาย', 'ลุงป้า']);
+    const rsn = pick(type.reasons);
+    reason = rsn.key;
+    const parentAge = rsn.alive === 'mom' ? ri(16, 19) : ri(20, 38);
+    form = pick(['ปู่ย่า', 'ตายาย', 'ลุงป้า']);
     const gsn = form === 'ตายาย' ? otherSurname : mySurname;
     const guardians = [];
     if (form === 'ปู่ย่า') {
@@ -151,14 +159,14 @@ export function rollFamily() {
       guardians.push(person('ป้า', false, Math.min(60, parentAge + ri(0, 12)), gsn, 3));
       if (Math.random() < 0.6) { guardians.push(person('ลุง', true, Math.min(62, parentAge + ri(0, 14)), gsn, 3)); }
     }
-    lines.push(intro(type), reason.text);
+    lines.push(intro(type), rsn.text);
     guardians.forEach((g) => { members.push(g); lines.push(describe(g)); });
-    if (reason.alive === 'both') {
+    if (rsn.alive === 'both') {
       const dad = person('พ่อ', true, parentAge + ri(0, 6), mySurname, 2, { note: 'แต่ไม่ได้อยู่ด้วยกัน' });
       const mom = person('แม่', false, parentAge, otherSurname, 2, { note: 'แต่ไม่ได้อยู่ด้วยกัน' });
       members.push(dad, mom);
       lines.push(describe(dad), describe(mom));
-    } else if (reason.alive === 'mom') {
+    } else if (rsn.alive === 'mom') {
       const mom = person('แม่', false, parentAge, otherSurname, 2, { note: 'แต่ไม่ได้อยู่ด้วยกัน' });
       members.push(mom);
       lines.push(describe(mom));
@@ -166,17 +174,18 @@ export function rollFamily() {
     bioMomAge = parentAge;
     sibs = rollSiblings(parentAge, mySurname, [0.8, 0.98]);
   } else {
-    const sub = weighted(type.subtypes);
-    warmth = sub.warmth;
-    care = sub.care;
-    lines.push(pick(sub.intros), 'ฉันไม่รู้ว่าพ่อแม่แท้ๆ ของฉันเป็นใคร');
-    if (sub.id === 'adopted') {
+    const st = weighted(type.subtypes);
+    sub = st.id;
+    warmth = st.warmth;
+    care = st.care;
+    lines.push(pick(st.intros), 'ฉันไม่รู้ว่าพ่อแม่แท้ๆ ของฉันเป็นใคร');
+    if (st.id === 'adopted') {
       const momAge = ri(28, 48);
       const mom = person('แม่บุญธรรม', false, momAge, otherSurname, 3);
       const dad = person('พ่อบุญธรรม', true, momAge + ri(-3, 6), mySurname, 3);
       members.push(dad, mom);
       lines.push(describe(dad), describe(mom));
-    } else if (sub.id === 'foster') {
+    } else if (st.id === 'foster') {
       const mom = person('แม่อุปถัมภ์', false, ri(30, 55), mySurname, 3);
       members.push(mom);
       lines.push(describe(mom));
@@ -208,7 +217,7 @@ export function rollFamily() {
   const dadM = members.find((m) => m.r === 'พ่อ' && m.g);
   return {
     type: type, surname: surname, section: section, members: members, lines: lines, noPet: noPet,
-    warmth: warmth, care: care, bioMomAge: bioMomAge,
+    warmth: warmth, care: care, bioMomAge: bioMomAge, sub: sub, reason: reason, form: form,
     momGenes: momM ? momM.g : drawGenes(), dadGenes: dadM ? dadM.g : drawGenes()
   };
 }

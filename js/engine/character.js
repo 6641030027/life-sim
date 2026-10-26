@@ -19,7 +19,7 @@ export function rollCharacter() {
   const fam = rollFamily();
   const me = {
     male, first, name: first + ' ' + fam.surname, surname: fam.surname, country: COUNTRY,
-    look: rollLook(male), family: { id: fam.type.id, label: fam.type.label, warmth: fam.warmth }
+    look: rollLook(male), family: { id: fam.type.id, label: fam.type.label, warmth: fam.warmth, care: fam.care, sub: fam.sub, reason: fam.reason, form: fam.form }
   };
 
   const rels = [{ sec: fam.section, items: fam.members }];
@@ -44,6 +44,7 @@ export function rollCharacter() {
   let health = 0.4 * genes.health + 0.3 * fam.care + 0.3 * rn(70, 15);
   if (fam.bioMomAge !== null && (fam.bioMomAge < 20 || fam.bioMomAge > 35)) { health -= 5; }
   if (Math.random() < 0.05) { complication = true; health -= 25; }
+  me.preterm = complication;
   const vals = {
     happy: Math.round(clamp(spread(0.35 * genes.happy + 0.35 * fam.warmth + 0.3 * rn(60, 15), 60, 1.7), 15, 100)),
     health: Math.round(clamp(spread(health, 65, 1.5), 10, 100)),

@@ -2,18 +2,17 @@
 
 import { state } from './state.js';
 import { rollCharacter } from './engine/character.js';
-import { eventFor } from './data/events/index.js';
+import { eventsFor } from './data/events/index.js';
 import { clearLog, addHeading, addLine, scrollLog } from './ui/log.js';
 import { renderHeader, renderCharacter } from './ui/header.js';
 import { renderFocus } from './ui/focus.js';
 import { renderStats } from './ui/stats.js';
-import { showEvent } from './ui/event.js';
+import { showEvents } from './ui/event.js';
+import { setStat, addSkills } from './engine/effects.js';
 import { stageOf } from './data/stages.js';
 import { hasYearRules, rollYear, schoolYear, yearText } from './engine/growth.js';
 import { makeClassmates, socialOf } from './engine/friends.js';
 import { SCHOOL } from './data/activities.js';
-import { SKILL_NAME } from './data/skills.js';
-import { levelOf } from './ui/skills.js';
 
 export function startNewLife() {
   const c = rollCharacter();
@@ -29,12 +28,16 @@ export function startNewLife() {
   state.skills = {};
   state.infantNote = false;
   state.toddlerNote = false;
+  state.seen = {};
+  state.flags = {};
+  state.queue = [];
   addHeading(0);
   c.lines.forEach((t) => addLine(t));
 
   renderCharacter();
   renderFocus();
   renderStats();
+  showEvents(eventsFor(0));      // เหตุการณ์ของขวบปีแรก
 }
 
 export function pressAge() {
@@ -57,7 +60,7 @@ export function pressAge() {
   }
   renderHeader();
   scrollLog();
-  showEvent(eventFor(state.age));
+  showEvents(eventsFor(state.age));
 }
 
 // ชั้นเรียนตามอายุ (การศึกษาภาคบังคับเริ่ม 6 ขวบ ป.1-ป.6 แล้วต่อ ม.1)
@@ -73,11 +76,6 @@ function ensureClassmates() {
   return list;
 }
 
-function setStat(k, fn) {
-  const s = state.stats.find((x) => x.k === k);
-  if (s) { s.v = Math.max(0, Math.min(100, Math.round(fn(s.v)))); }
-}
-
 function startSchoolYear() {
   if (!GRADES[state.age]) { return; }
   const first = ensureClassmates();
@@ -88,18 +86,6 @@ function startSchoolYear() {
   }
   setStat('social', () => socialOf(state.rels));
   renderStats();
-}
-
-// เพิ่มแต้มทักษะ และเล่าในบันทึกเมื่อทักษะขึ้นขั้นใหม่
-function addSkills(gain) {
-  const ups = [];
-  Object.keys(gain).forEach((id) => {
-    const before = levelOf(state.skills[id] || 0);
-    state.skills[id] = Math.min(100, (state.skills[id] || 0) + gain[id]);
-    const after = levelOf(state.skills[id]);
-    if (after.n > before.n) { ups.push(SKILL_NAME[id] + ' ขั้น ' + after.n + ' ' + after.name); }
-  });
-  if (ups.length) { addLine('ทักษะที่ก้าวหน้า: ' + ups.join(' · ')); }
 }
 
 // เด็กทำอะไรจริงในปีที่ผ่านมา (สุ่ม สิ่งที่เลือกเพิ่มโอกาสตามอายุ)
