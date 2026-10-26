@@ -4,7 +4,7 @@
 import { EVENTS as TODDLER, PER_YEAR as TODDLER_N } from './toddler.js';
 import { EVENTS as CHILD, PER_YEAR as CHILD_N } from './child.js';
 import { EVENTS as TEEN, PER_YEAR as TEEN_N } from './teen.js';
-import { EV_YOUNG } from './young.js';
+import { EVENTS as YOUNG, PER_YEAR as YOUNG_N } from './young.js';
 import { EV_ADULT } from './adult.js';
 import { EV_ELDER } from './elder.js';
 import { EVENTS as INFANT, PER_YEAR as INFANT_N } from './infant.js';
@@ -15,7 +15,7 @@ export function eventsFor(age) {
   if (age < 5) { return rollEvents(TODDLER, TODDLER_N); }
   if (age < 13) { return rollEvents(CHILD, CHILD_N); }
   if (age < 18) { return rollEvents(TEEN, TEEN_N); }
-  if (age < 30) { return [EV_YOUNG]; }
+  if (age < 30) { return rollEvents(YOUNG, YOUNG_N); }
   if (age < 60) { return [EV_ADULT]; }
   return [EV_ELDER];
 }
