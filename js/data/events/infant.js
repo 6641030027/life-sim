@@ -10,7 +10,7 @@
 
 import { byCare, byWarmth } from '../../engine/events.js';
 
-export const PER_YEAR = 2;   // จำนวนเหตุการณ์ต่อปี
+export const PER_YEAR = 1;   // จำนวนเหตุการณ์ต่อปี (1 เรื่อง เผื่อให้เหตุพิเศษที่เกิดจากจุดเน้น ทักษะ หรือค่าสถานะในอนาคต)
 
 const o = (p, text, fx) => ({ p: p, text: text, fx: fx || {} });
 const auto = (outcomes) => [{ label: 'ดูว่าเกิดอะไรขึ้น', auto: true, outcomes: outcomes }];
