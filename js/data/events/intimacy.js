@@ -147,7 +147,7 @@ const declineOutcomes = (c, textKeep, textBreak) => [
 
 export const EVENTS = [
   {
-    id: 'adult-intimacy', free: true, age: [18, 99],
+    id: 'adult-intimacy', free: true, age: [13, 99],
     need: (c) => {
       const p = state.flags.partner;
       return !!(p && p.rel && state.flags.dating && (p.age === undefined || p.age >= 18));
