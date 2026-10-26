@@ -147,10 +147,10 @@ const declineOutcomes = (c, textKeep, textBreak) => [
 
 export const EVENTS = [
   {
-    id: 'adult-intimacy', free: true, age: [13, 99],
+    id: 'adult-intimacy', free: true, age: [18, 99],
     need: (c) => {
       const p = state.flags.partner;
-      return !!(p && p.rel && state.flags.dating && (p.age === undefined || p.age >= 13));
+      return !!(p && p.rel && state.flags.dating && (p.age === undefined || p.age >= 18));
     },
     w: (c) => chanceThisYear(c) * 10,   // free: โอกาส = w/10
     title: 'ความใกล้ชิด',
