@@ -33,7 +33,9 @@ export function buildCtx() {
     age: state.age, me: me, id: f.id, sub: f.sub, reason: f.reason, form: f.form, warmth: f.warmth, care: f.care,
     fam: fam, sibs: fam.filter((p) => p.r === 'พี่ชาย' || p.r === 'พี่สาว'),
     pet: petGroup ? petGroup.items[0] : null, cg: cg, cgRole: cg ? cg.r : 'ผู้ดูแล',
-    preterm: !!me.preterm, flags: state.flags
+    preterm: !!me.preterm, flags: state.flags, skills: state.skills,
+    elder: fam.find((p) => ['ย่า', 'ยาย', 'ปู่', 'ตา'].indexOf(p.r) >= 0 && !p.note) || null,
+    mom: fam.find((p) => p.r === 'แม่' && !p.note) || null
   };
 }
 
@@ -65,7 +67,7 @@ function drawWeighted(items, getW) {
   return items[items.length - 1];
 }
 
-// เลือกเหตุการณ์ของปีนี้ count รายการ: รายการแรกมีโอกาส 65% ที่จะเป็นเรื่องเฉพาะต้นกำเนิด (ถ้ามี) ที่เหลือสุ่มทั่วไป
+// เลือกเหตุการณ์ของปีนี้ count รายการ: รายการแรกมีโอกาส 65% ที่จะเป็นเรื่องเฉพาะต้นกำเนิดกลุ่มน้อย (ถ้ามี) ที่เหลือสุ่มตามน้ำหนัก
 export function rollEvents(list, count) {
   const c = buildCtx();
   let pool = list.filter((ev) => eligible(ev, c));
@@ -73,7 +75,9 @@ export function rollEvents(list, count) {
   for (let i = 0; i < count && pool.length; i++) {
     let src = pool;
     if (i === 0) {
-      const special = pool.filter((e) => e.family || e.sub || e.reason);
+      // เรื่องเฉพาะต้นกำเนิดที่ "เป็นเอกลักษณ์" (ไม่ใช่ครอบครัวเดี่ยว/ขยายที่คนส่วนใหญ่เป็น) ได้สิทธิ์ก่อน
+      const special = pool.filter((e) => e.sub || e.reason ||
+        (e.family && e.family.indexOf('nuclear') < 0 && e.family.indexOf('extended') < 0));
       if (special.length && Math.random() < 0.65) { src = special; }
     }
     const ev = drawWeighted(src, (e) => txt(e.w === undefined ? 1 : e.w, c));

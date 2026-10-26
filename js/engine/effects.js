@@ -7,6 +7,7 @@
 //   carer  3        ผู้ดูแลหลัก          sibs 2  พี่น้อง          elder 2  ญาติผู้ใหญ่
 //   pet    2        สัตว์เลี้ยง          rel { 'แม่': 3 }  ระบุตามบทบาท
 //   flag   { vaxLate: 1 }               จดไว้ให้เหตุการณ์ถัดไปใช้
+//   newSib true     มีน้องเกิดใหม่ในบ้าน
 //   swapCarer 'แม่อุปถัมภ์'              เปลี่ยนตัวผู้ดูแลคนนั้นเป็นคนใหม่
 // คืนค่า: แท็กสรุปผล [[ข้อความ, 'good'|'bad']] ไว้โชว์ท้ายเหตุการณ์
 
@@ -79,6 +80,12 @@ export function applyFx(fx, c) {
       old.age = ri(30, 55);
       addLine('ผู้ดูแลคนใหม่ของฉันคือ ' + old.n + ' (อายุ ' + old.age + ' ปี)');
     }
+  }
+  if (fx.newSib) {
+    const male = Math.random() < 0.5;
+    const sib = { n: pick(male ? MALE : FEMALE) + ' ' + state.me.surname, r: male ? 'น้องชาย' : 'น้องสาว', v: 60, w: 2, age: 0 };
+    if (state.rels[0]) { state.rels[0].items.push(sib); }
+    addLine('ฉันมี' + sib.r + 'ชื่อ ' + sib.n + ' (อายุ 0 ปี)');
   }
   setStat('social', () => socialOf(state.rels));
   return tags;
