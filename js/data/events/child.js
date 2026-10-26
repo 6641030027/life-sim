@@ -16,28 +16,11 @@
 // ตัวเลขน้ำหนักโอกาสเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
 import { byCare, byWarmth } from '../../engine/events.js';
+import { o, auto, ch, t, sk, LV2 } from './_kit.js';
 
 export const PER_YEAR = 1;
 
-export const o = (p, text, fx) => ({ p: p, text: text, fx: fx || {} });
-const auto = (outcomes) => [{ label: 'ดูว่าเกิดอะไรขึ้น', auto: true, outcomes: outcomes }];
-export const ch = (label, tags, outcomes) => ({ label: label, tags: tags, outcomes: outcomes });
-
-// ผู้ปกครองที่ดูแลเรา เรียกตามต้นกำเนิด ใช้ {G} ในข้อความ
-const G = (c) => {
-  if (c.id === 'single-mom') { return 'แม่'; }
-  if (c.id === 'single-dad') { return 'พ่อ'; }
-  if (c.id === 'relatives') { return c.cgRole; }
-  if (c.id === 'care') {
-    if (c.sub === 'adopted') { return 'พ่อแม่บุญธรรม'; }
-    if (c.sub === 'foster') { return 'แม่อุปถัมภ์'; }
-    return 'พี่เลี้ยง';
-  }
-  return 'พ่อแม่';
-};
-export const t = (s) => (c) => s.split('{G}').join(G(c));
-export const sk = (c, k) => c.skills[k] || 0;
-export const LV2 = 9;   // ทักษะขั้น 2 ขึ้นไป (พอมีพื้นฐาน)
+export { o, ch, t, sk, LV2 };
 
 export const EVENTS = [
   // ---------------------------------------------------------------- ทั่วไป

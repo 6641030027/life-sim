@@ -8,6 +8,7 @@
 //   friends 2       เพื่อนทุกคน           bf 3     เพื่อนสนิทที่สุด
 //   pet    2        สัตว์เลี้ยง          rel { 'แม่': 3 }  ระบุตามบทบาท
 //   flag   { vaxLate: 1 }               จดไว้ให้เหตุการณ์ถัดไปใช้
+//   pass 'elder'    คนในครอบครัวเสียชีวิต ('elder' = ญาติผู้ใหญ่ หรือระบุบทบาท เช่น 'ย่า') จะไม่ถูกนับเป็นผู้ดูแลอีก
 //   newSib true     มีน้องเกิดใหม่ในบ้าน
 //   swapCarer 'แม่อุปถัมภ์'              เปลี่ยนตัวผู้ดูแลคนนั้นเป็นคนใหม่
 // คืนค่า: แท็กสรุปผล [[ข้อความ, 'good'|'bad']] ไว้โชว์ท้ายเหตุการณ์
@@ -66,13 +67,22 @@ export function applyFx(fx, c) {
   if (fx.friends) { bump(c.friends, fx.friends, rel); }
   if (fx.bf && c.bf) { bump([c.bf], fx.bf, rel); }
   if (fx.rel) {
-    Object.keys(fx.rel).forEach((role) => { bump(c.fam.filter((p) => p.r === role), fx.rel[role], rel); });
+    Object.keys(fx.rel).forEach((role) => { bump(c.fam.filter((p) => p.r === role && !p.dead), fx.rel[role], rel); });
   }
   if (rel.length) {
     const net = rel.reduce((a, b) => a + b, 0);
     if (net !== 0) { tags.push(['ความสัมพันธ์' + (net > 0 ? 'ดีขึ้น' : 'แย่ลง'), net > 0 ? 'good' : 'bad']); }
   }
 
+  if (fx.pass) {   // คนในครอบครัวเสียชีวิต: 'elder' = ญาติผู้ใหญ่ในบ้าน หรือระบุบทบาท เช่น 'ย่า'
+    const who = fx.pass === 'elder' ? c.elder : c.fam.find((p) => p.r === fx.pass && !p.note);
+    if (who) {
+      who.dead = true;
+      who.note = 'เสียชีวิตแล้ว';
+      addLine(who.r + ' ' + who.n + ' เสียชีวิต (อายุ ' + who.age + ' ปี)');
+      tags.push(['สูญเสียคนในครอบครัว', 'bad']);
+    }
+  }
   if (fx.flag) { Object.keys(fx.flag).forEach((k) => { state.flags[k] = fx.flag[k]; }); }
 
   if (fx.swapCarer) {

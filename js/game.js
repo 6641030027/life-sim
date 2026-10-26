@@ -44,6 +44,7 @@ export function pressAge() {
   const lived = state.age;                       // ปีที่เพิ่งผ่านไป
   const oldStage = stageOf(lived).name;
   state.age += 1;
+  state.rels.forEach((g) => { g.items.forEach((p) => { if (p.age !== undefined && !p.dead) { p.age += 1; } }); });   // ทุกคนแก่ขึ้นปีละ 1 (คนที่เสียชีวิตแล้วหยุดนับ)
   addHeading(state.age);
   if (state.age < 2 && state.focus.length > 0 && !state.infantNote) {
     addLine('เด็กน้อยยังไม่รู้เรื่องหรอก ชีวิตเลยเป็นไปตามที่ผู้ใหญ่จัดให้');
@@ -64,7 +65,7 @@ export function pressAge() {
 }
 
 // ชั้นเรียนตามอายุ (การศึกษาภาคบังคับเริ่ม 6 ขวบ ป.1-ป.6 แล้วต่อ ม.1)
-const GRADES = { 6: 'ป.1', 7: 'ป.2', 8: 'ป.3', 9: 'ป.4', 10: 'ป.5', 11: 'ป.6', 12: 'ม.1' };
+const GRADES = { 6: 'ป.1', 7: 'ป.2', 8: 'ป.3', 9: 'ป.4', 10: 'ป.5', 11: 'ป.6', 12: 'ม.1', 13: 'ม.2', 14: 'ม.3', 15: 'ม.4', 16: 'ม.5', 17: 'ม.6' };
 
 function friendsSection() { return state.rels.find((g) => g.sec === 'เพื่อน'); }
 

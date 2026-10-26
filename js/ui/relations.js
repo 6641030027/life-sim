@@ -13,6 +13,7 @@ function personDetail(p) {
   const bits = [];
   if (p.job) { bits.push('อาชีพ' + p.job); }
   if (p.age !== undefined) { bits.push('อายุ ' + p.age + ' ปี'); }
+  if (p.dead) { bits.push('เสียชีวิตแล้ว'); }
   return bits.join(' · ');
 }
 
@@ -42,7 +43,7 @@ export function openRelations() {
       b.className = 'rel';
       b.innerHTML =
         '<div class="avatar">' + initial(p.n) + '</div>' +
-        '<div class="info"><div class="rname">' + p.n + ' <span>(' + p.r + ')</span></div>' +
+        '<div class="info"><div class="rname">' + p.n + ' <span>(' + p.r + (p.dead ? ' · เสียชีวิตแล้ว' : '') + ')</span></div>' +
         '<div class="rbar">ความสัมพันธ์ ' + relBar(p.v) + '</div></div>' +
         '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
       b.addEventListener('click', () => { openPerson(p); });

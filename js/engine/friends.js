@@ -21,6 +21,6 @@ export function makeClassmates(age) {
 export function socialOf(rels) {
   let sum = 0;
   let wsum = 0;
-  rels.forEach((g) => { g.items.forEach((p) => { sum += p.v * p.w; wsum += p.w; }); });
+  rels.forEach((g) => { g.items.forEach((p) => { if (p.dead) { return; } sum += p.v * p.w; wsum += p.w; }); });
   return wsum ? Math.round(sum / wsum) : 0;
 }
