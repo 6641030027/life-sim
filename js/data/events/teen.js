@@ -13,6 +13,7 @@
 //  - ระบบเข้ามหาวิทยาลัย TCAS มี 4 รอบ: portfolio, โควตา, แอดมิชชัน (คะแนน TGAT/TPAT/A-Level เลือกได้ 10 อันดับ), รับตรง
 //    ค่าสมัครหลายรอบเป็นภาระของครอบครัวรายได้น้อย (Fulcrum)
 //  - ชั้นเรียนไทย: ม.1 = 12 ปี ... ม.4 = 15 ปี ม.6 = 17 ปี  สอบเข้า ม.4 ตอนจบ ม.3
+// free: true = ภาคต่อของเรื่องแรก (crush -> firstdate -> breakup, vape -> vape-habit) ไม่นับโควต้าปีละ 1 เรื่อง
 // ตัวเลขน้ำหนักโอกาสเป็นค่าประมาณเพื่อเกม ไม่ใช่สถิติจริง
 
 import { byCare, byWarmth } from '../../engine/events.js';
@@ -145,7 +146,7 @@ export const EVENTS = [
     ]
   },
   {
-    id: 'teen-firstdate', age: [15, 17], w: 3, need: (c) => !!c.flags.crush && !c.flags.dating,
+    id: 'teen-firstdate', free: true, age: [15, 17], w: 3, need: (c) => !!c.flags.crush && !c.flags.dating,
     title: 'นัดเดทครั้งแรก',
     desc: 'คนที่ฉันแอบชอบชวนไปดูหนังด้วยกันวันเสาร์ ฉันยืนหน้ากระจกนานเพราะไม่รู้ว่าควรใส่อะไร',
     choices: [
@@ -163,7 +164,7 @@ export const EVENTS = [
     ]
   },
   {
-    id: 'teen-breakup', age: [15, 17], w: 3.5, need: (c) => !!c.flags.dating,
+    id: 'teen-breakup', free: true, age: [15, 17], w: 3.5, need: (c) => !!c.flags.dating,
     title: 'เลิกกันแล้ว',
     desc: 'ความสัมพันธ์ของเราเริ่มห่างลงเรื่อยๆ วันนี้เขาบอกว่า "เราเป็นเพื่อนกันดีกว่า" ฉันนั่งนิ่งอยู่ที่ม้านั่งหน้าโรงเรียน',
     choices: [
@@ -198,7 +199,7 @@ export const EVENTS = [
     ]
   },
   {
-    id: 'teen-vape-habit', age: [14, 17], w: 6, need: (c) => !!c.flags.vape,
+    id: 'teen-vape-habit', free: true, age: [14, 17], w: 6, need: (c) => !!c.flags.vape,
     title: 'เลิกไม่ได้เสียที',
     desc: 'ตอนนี้ฉันหยิบบุหรี่ไฟฟ้ามาสูบทุกวันโดยไม่รู้ตัว ปวดหัวและเหนื่อยง่ายขึ้นเวลาวิ่งตอนวิชาพละ ครูพละสังเกตเห็นว่าฉันหอบง่าย',
     choices: [
