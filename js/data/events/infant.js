@@ -151,7 +151,7 @@ export const EVENTS = [
     ])
   },
   {
-    id: 'inf-dengue', age: [0, 1], w: 0.06,
+    id: 'inf-dengue', country: ['ไทย'], age: [0, 1], w: 0.06,
     title: 'ไข้สูงหลายวัน',
     desc: 'หน้าฝนยุงชุก ฉันมีไข้สูงต่อเนื่องหลายวัน ไม่ยอมกินอะไรเลย',
     choices: auto([
@@ -296,7 +296,7 @@ export const EVENTS = [
     ])
   },
   {
-    id: 'rel-dead', age: [0, 1], family: ['relatives'], reason: ['dead'], w: 3,
+    id: 'rel-dead', country: ['ไทย'], age: [0, 1], family: ['relatives'], reason: ['dead'], w: 3,
     title: 'ไหว้รูปพ่อแม่',
     desc: (c) => c.cgRole + 'อุ้มฉันไปไหว้รูปพ่อแม่ที่ตั้งไว้บนหิ้ง และทำบุญอุทิศให้ท่านในวันสำคัญ',
     choices: auto([

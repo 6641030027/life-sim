@@ -160,7 +160,7 @@ export const EVENTS = [
     ]
   },
   {
-    id: 'tod-water', age: [2, 4], w: 1.1,
+    id: 'tod-water', country: ['ไทย'], age: [2, 4], w: 1.1,
     title: 'น้ำใกล้บ้าน',
     desc: 'ใกล้บ้านมีบ่อ โอ่ง หรือแหล่งน้ำ ฉันเดินไปใกล้ตอนผู้ใหญ่เผลอ การจมน้ำเป็นอันตรายอันดับต้นๆ ของเด็กวัยนี้ และมักเกิดใกล้บ้าน',
     choices: auto([
@@ -255,7 +255,7 @@ export const EVENTS = [
     ])
   },
   {
-    id: 'tod-songkran', age: [2, 4], w: 1.2,
+    id: 'tod-songkran', country: ['ไทย'], age: [2, 4], w: 1.2,
     title: 'สงกรานต์',
     desc: 'วันสงกรานต์ ญาติและเพื่อนบ้านสาดน้ำกันเต็มถนน',
     choices: auto([

@@ -3,6 +3,7 @@
 // เหตุการณ์ 1 รายการ (ไฟล์ใน data/events/ ช่วงวัยละไฟล์):
 //   id       ไม่ซ้ำ (เกิดได้ครั้งเดียวต่อชีวิต)
 //   age      [น้อยสุด, มากสุด] ปีที่เกิดได้
+//   country  ['ไทย'] เกิดได้เฉพาะตัวละครที่เกิดในประเทศเหล่านี้ (ไม่ใส่ = ทุกประเทศ) ใช้กับวันสำคัญ/ระบบโรงเรียน/สถิติของไทย
 //   family   ['nuclear', ...] เฉพาะต้นกำเนิดเหล่านี้ (ไม่ใส่ = ทุกคนเจอได้)
 //   sub      ชนิดย่อยของ care: 'adopted' | 'foster' | 'institution'
 //   reason   เหตุผลของครอบครัว (key ใน data/families.js)
@@ -33,7 +34,7 @@ export function buildCtx() {
     cg = fam.find((p) => p.r === CARER_ORDER[i] && !p.note) || null;
   }
   return {
-    age: state.age, me: me, id: f.id, sub: f.sub, reason: f.reason, form: f.form, warmth: f.warmth, care: f.care,
+    age: state.age, me: me, country: me.country, id: f.id, sub: f.sub, reason: f.reason, form: f.form, warmth: f.warmth, care: f.care,
     fam: fam, sibs: fam.filter((p) => p.r === 'พี่ชาย' || p.r === 'พี่สาว'),
     pet: petGroup ? petGroup.items[0] : null, cg: cg, cgRole: cg ? cg.r : 'ผู้ดูแล',
     preterm: !!me.preterm, flags: state.flags, skills: state.skills,
@@ -54,6 +55,7 @@ export const txt = (x, c) => (typeof x === 'function' ? x(c) : x);
 function eligible(ev, c) {
   if (state.seen[ev.id]) { return false; }
   if (ev.age && (c.age < ev.age[0] || c.age > ev.age[1])) { return false; }
+  if (ev.country && ev.country.indexOf(c.country) < 0) { return false; }
   if (ev.family && ev.family.indexOf(c.id) < 0) { return false; }
   if (ev.sub && ev.sub.indexOf(c.sub) < 0) { return false; }
   if (ev.reason && ev.reason.indexOf(c.reason) < 0) { return false; }

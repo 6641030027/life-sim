@@ -1,4 +1,5 @@
 // เลือกเหตุการณ์ของปีตามอายุ: ช่วงวัยที่เขียนจริงแล้วใช้ระบบสุ่มตามเงื่อนไข (engine/events.js)
+// skill-events.js (เหตุจากทักษะ) ซ่อนไว้ ยังไม่ import จนกว่าจะทำระบบอาชีพเสร็จ
 // ช่วงวัยที่ยังไม่ได้เขียน ใช้เหตุการณ์ตัวอย่างชั่วคราวไฟล์ละ 1 รายการ
 import { EVENTS as TODDLER, PER_YEAR as TODDLER_N } from './toddler.js';
 import { EVENTS as CHILD, PER_YEAR as CHILD_N } from './child.js';
